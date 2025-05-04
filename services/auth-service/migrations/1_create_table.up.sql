@@ -1,11 +1,14 @@
 --todo сделать таблицу с сессиями (хранить там токены)
 CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(64) NOT NULL UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT now()
+                       id             SERIAL PRIMARY KEY,
+                       name           VARCHAR(64) NOT NULL,
+                       email          VARCHAR(255) NOT NULL UNIQUE,
+                       password_hash  VARCHAR(255) NOT NULL,
+                       created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+                       updated_at     TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+
 
 
 CREATE TABLE IF NOT EXISTS topics (

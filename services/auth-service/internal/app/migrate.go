@@ -49,7 +49,7 @@ func init() {
 		log.Fatalf("Migrate: postgres connect error: %s", err)
 	}
 
-	err = m.Up()
+	err = m.Down()
 	defer m.Close()
 	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		log.Fatalf("Migrate: up error: %s", err)
