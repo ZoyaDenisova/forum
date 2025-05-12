@@ -16,5 +16,5 @@ func Run(cfg *config.Config) {
 	}
 	defer pg.Close()
 
-	fmt.Println("Auth-service start11")
+	fmt.Println("Auth-service start113")
 }
