@@ -1,21 +1,20 @@
 package app
 
 import (
-	"auth-service/config"
-	"auth-service/internal/controller/grpc"
-	httpd "auth-service/internal/controller/http"
-	"auth-service/internal/cron"
-	"auth-service/internal/repo"
-	"auth-service/internal/usecase"
+	authpb "chat-service/cmd/app/docs/proto"
+	"chat-service/config"
+	httpd "chat-service/internal/controller/http"
+	wsCtrl "chat-service/internal/controller/ws"
+	"chat-service/internal/repo"
+	"chat-service/internal/usecase"
 	"context"
 	"errors"
-	"github.com/ZoyaDenisova/go-common/hasher"
-	"github.com/ZoyaDenisova/go-common/jwt"
+	"fmt"
 	"github.com/ZoyaDenisova/go-common/logger"
 	"github.com/ZoyaDenisova/go-common/postgres"
-	cronlib "github.com/robfig/cron/v3"
 	"go.uber.org/zap"
-	"net"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"net/http"
 	"os"
 	"os/signal"
@@ -42,34 +41,32 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 
 	// Repositories
-	userRepo := repo.NewUserRepo(pg)
-	sessRepo := repo.NewSessionRepo(pg)
-
-	// Services
-	hasherSvc := hasher.NewHasher()
-	tokens := jwt.NewJWTManager(
-		cfg.JWT.Secret,
-		cfg.JWT.AccessTTL,
-		cfg.JWT.RefreshTTL,
-	)
+	catRepo := repo.NewCategoryRepo(pg)
+	topicRepo := repo.NewTopicRepo(pg)
+	msgRepo := repo.NewMessageRepo(pg)
 
 	// Use-cases
-	userUC := usecase.NewUserUsecase(userRepo, sessRepo, hasherSvc, tokens)
-	sessUC := usecase.NewSessionUsecase(sessRepo, userRepo, tokens)
+	hub := wsCtrl.NewHub()
+	catUC := usecase.NewCategoryUsecase(catRepo)
+	topicUC := usecase.NewTopicUsecase(topicRepo)
+	msgUC := usecase.NewMessageUsecase(msgRepo, hub)
+
+	authAddr := fmt.Sprintf("%s:%s", cfg.AuthGRPC.Host, cfg.AuthGRPC.Port)
+	conn, err := grpc.Dial(
+		authAddr,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithBlock(),
+	)
+	if err != nil {
+		l.Fatal("failed to dial auth-service", zap.String("addr", authAddr), zap.Error(err))
+	}
+	defer conn.Close()
+
+	// 2) Создаём клиента
+	authClient := authpb.NewAuthServiceClient(conn)
 
 	// Router
-	router := httpd.NewRouter(l, userUC, sessUC, tokens, cfg)
-
-	// Cron
-	scheduler := cronlib.New()
-	if err := cron.RegisterSessionCleanup(
-		scheduler,
-		cfg.SessionCleanupCron.Schedule,
-		sessUC,
-		l,
-	); err != nil {
-		l.Fatal("failed to register cron task:", err)
-	}
+	router := httpd.NewRouter(l, catUC, topicUC, msgUC, hub, authClient, cfg)
 
 	// HTTP Server
 	srv := &http.Server{
@@ -87,20 +84,6 @@ func Run(cfg *config.Config) {
 			l.Fatal("listen failed", zap.Error(err))
 		}
 	}()
-
-	grpcSrv := grpc.NewRouter(l, tokens)
-
-	addr := ":" + cfg.GRPC.Port // фикс
-
-	lis, err := net.Listen("tcp", addr)
-	if err != nil {
-		l.Fatal("failed to listen gRPC", zap.Error(err))
-	}
-	l.Info("starting gRPC server", zap.String("addr", addr))
-
-	if err := grpcSrv.Serve(lis); err != nil {
-		l.Fatal("gRPC server error", zap.Error(err))
-	}
 
 	// Graceful shutdown
 	quit := make(chan os.Signal, 1)

@@ -3,20 +3,17 @@ package config
 import (
 	"fmt"
 	"github.com/caarlos0/env/v11"
-	"time"
 )
 
 type (
 	// Config -.
 	Config struct {
-		App                App
-		HTTP               HTTP
-		GRPC               GRPC
-		Log                Log
-		PG                 PG
-		JWT                JWT
-		Swagger            Swagger
-		SessionCleanupCron SessionCleanupCron
+		App      App
+		HTTP     HTTP
+		Log      Log
+		PG       PG
+		Swagger  Swagger
+		AuthGRPC AuthGRPC
 	}
 
 	// App -.
@@ -30,24 +27,16 @@ type (
 		Level string `env:"LOG_LEVEL,required"`
 	}
 
-	SessionCleanupCron struct {
-		Schedule string `env:"SESSION_CLEANUP_CRON,required"`
-	}
-
-	JWT struct {
-		Secret     string        `env:"JWT_SECRET,required"`
-		AccessTTL  time.Duration `env:"JWT_ACCESS_TTL,required"`  // 15m
-		RefreshTTL time.Duration `env:"JWT_REFRESH_TTL,required"` // 720h (=30d)
-	}
-
 	// HTTP -.
 	HTTP struct {
 		Port           string `env:"HTTP_PORT,required"`
 		UsePreforkMode bool   `env:"HTTP_USE_PREFORK_MODE" envDefault:"false"`
 	}
 
-	GRPC struct {
-		Port string `env:"GRPC_PORT,required"`
+	// AuthGRPC хранит адрес auth-сервиса для gRPC
+	AuthGRPC struct {
+		Host string `env:"AUTH_GRPC_HOST,required"` // например "localhost" или DNS-имя k8s-сервиса
+		Port string `env:"AUTH_GRPC_PORT,required"` // например "50051"
 	}
 
 	// PG -.

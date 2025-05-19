@@ -1,0 +1,59 @@
+{"level":"info","time":"2025-05-19T03:14:18.963+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T03:19:13.109+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T03:19:13.139+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T03:19:30.472+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T03:19:30.472+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T03:20:34.173+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T03:20:34.205+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T03:24:40.008+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T03:24:40.008+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T03:24:43.775+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T03:24:43.805+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T03:25:43.511+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T03:25:43.511+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T03:25:46.226+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T03:25:46.257+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T03:25:55.593+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T03:25:55.593+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T03:26:37.071+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T03:26:37.116+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T03:27:54.063+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T03:27:54.063+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T03:30:07.902+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T03:30:07.932+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T03:49:10.279+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T03:49:10.280+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T12:15:23.750+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T12:15:23.853+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T12:26:24.601+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T12:26:24.602+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T12:26:30.822+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T12:26:30.893+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T12:44:55.467+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T12:44:55.468+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T12:45:01.549+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T12:45:01.621+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T12:46:33.367+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T12:46:33.367+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T12:46:39.324+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T12:46:39.388+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T13:00:40.551+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T13:00:40.552+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T13:00:46.254+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T13:00:46.317+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T13:01:34.722+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T13:01:34.722+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T13:01:40.154+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T13:01:40.239+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T13:04:00.992+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T13:04:00.992+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T13:04:06.650+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T13:04:06.714+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T13:43:28.532+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T13:43:28.533+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T13:43:31.416+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T13:43:31.489+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T13:53:22.458+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T13:53:22.460+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-19T13:53:29.447+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-19T13:53:32.032+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}

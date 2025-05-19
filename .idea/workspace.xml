@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4bb45c3c-2ad8-42d4-92d4-a72f8b41c8b7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/.env" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/.idea/sqldialects.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/cmd/app/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/cmd/app/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/internal/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/internal/app/app.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/internal/app/migrate.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/internal/app/migrate.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/internal/entity/Session.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/internal/entity/Session.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/internal/entity/User.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/internal/entity/User.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/internal/repo/contracts.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/internal/repo/contracts.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/internal/repo/session.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/internal/repo/session.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/internal/repo/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/internal/repo/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/migrations/1_create_table.down.sql" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/migrations/1_create_table.down.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/migrations/1_create_table.up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/migrations/1_create_table.up.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/migrations/2_create_table_session.up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-service/migrations/2_create_table_sessions.up.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/pkg/postgres/option.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-service/pkg/postgres/postgres.go" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../Program Files/Go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ZoyaDenisova&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ZoyaDenisova/forum.git&quot;,
+    &quot;accountId&quot;: &quot;e52b481d-7104-4561-921e-2c0988f93a63&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2x7NZYAjSTciDbLu4mv8MkKbWZJ" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/user&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/user/GolandProjects/forum/main.go&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-gosdk-d297c17c1fbd-85c80fddc9a6-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-243.23654.166" />
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-GO-243.23654.166" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/main.go</url>
+          <line>18</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
