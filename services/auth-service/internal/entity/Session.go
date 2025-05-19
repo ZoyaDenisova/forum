@@ -7,8 +7,6 @@ type Session struct {
 	UserID       int64
 	RefreshToken string
 	UserAgent    string
-	IPAddress    string
 	CreatedAt    time.Time
 	ExpiresAt    time.Time
-	LastUsedAt   *time.Time // nil, если ещё не использовалась
 }

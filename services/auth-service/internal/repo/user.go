@@ -3,13 +3,14 @@ package repo
 import (
 	"auth-service/internal/entity"
 	"auth-service/internal/errors"
-	"auth-service/pkg/postgres"
 	"context"
 	"fmt"
+	"github.com/ZoyaDenisova/go-common/postgres"
 	"github.com/jackc/pgx/v5"
 )
 
-// TODO проверить чтобы время задавалось в самой бд а не тут
+// TODO время задавать в юскейсах
+// todo хранить роль в JWT-токене: При генерации access-токена добавлять поле role, чтобы фронт и backend могли делать проверки без запроса к БД
 type UserRepoPostgres struct {
 	*postgres.Postgres
 }
@@ -18,25 +19,27 @@ func NewUserRepo(pg *postgres.Postgres) *UserRepoPostgres {
 	return &UserRepoPostgres{pg}
 }
 
-func (r *UserRepoPostgres) Save(ctx context.Context, u *entity.User) error {
-	const op = "UserRepo.Save"
-
+func (r *UserRepoPostgres) Create(ctx context.Context, u *entity.User) error {
 	query := `
-		INSERT INTO users (id, name, email, password_hash, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6)
-		ON CONFLICT (id) DO UPDATE SET
-			name = EXCLUDED.name,
-			email = EXCLUDED.email,
-			password_hash = EXCLUDED.password_hash,
-			updated_at = NOW()
+		INSERT INTO users (name, email, password_hash, role, created_at)
+		VALUES ($1, $2, $3, $4, $5)
+		RETURNING id
 	`
+	return r.Pool.QueryRow(ctx, query, u.Name, u.Email, u.PasswordHash, u.Role, u.CreatedAt).Scan(&u.ID)
+}
 
-	ct, err := r.Pool.Exec(ctx, query, u.ID, u.Name, u.Email, u.PasswordHash, u.CreatedAt, u.UpdatedAt)
+func (r *UserRepoPostgres) Update(ctx context.Context, u *entity.User) error {
+	query := `
+		UPDATE users
+		SET name = $1, email = $2, password_hash = $3, role = $4
+		WHERE id = $5
+	`
+	cmd, err := r.Pool.Exec(ctx, query, u.Name, u.Email, u.PasswordHash, u.Role, u.ID)
 	if err != nil {
-		return fmt.Errorf("%s: exec: %w", op, err)
+		return err
 	}
-	if ct.RowsAffected() == 0 {
-		return fmt.Errorf("%s: %w", op, errors.ErrConflict)
+	if cmd.RowsAffected() == 0 {
+		return errors.ErrNotFound
 	}
 	return nil
 }
@@ -45,13 +48,15 @@ func (r *UserRepoPostgres) GetByID(ctx context.Context, id int64) (*entity.User,
 	const op = "UserRepo.GetByID"
 
 	query := `
-		SELECT id, name, email, password_hash, created_at, updated_at
+		SELECT id, name, email, password_hash, role, created_at
 		FROM users
 		WHERE id = $1
 	`
 
 	var u entity.User
-	err := r.Pool.QueryRow(ctx, query, id).Scan(&u.ID, &u.Name, &u.Email, &u.PasswordHash, &u.CreatedAt, &u.UpdatedAt)
+	err := r.Pool.QueryRow(ctx, query, id).Scan(
+		&u.ID, &u.Name, &u.Email, &u.PasswordHash, &u.Role, &u.CreatedAt,
+	)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, fmt.Errorf("%s: %w", op, errors.ErrNotFound)
@@ -66,13 +71,15 @@ func (r *UserRepoPostgres) GetByEmail(ctx context.Context, email string) (*entit
 	const op = "UserRepo.GetByEmail"
 
 	query := `
-		SELECT id, name, email, password_hash, created_at, updated_at
+		SELECT id, name, email, password_hash, role, created_at
 		FROM users
 		WHERE email = $1
 	`
 
 	var u entity.User
-	err := r.Pool.QueryRow(ctx, query, email).Scan(&u.ID, &u.Name, &u.Email, &u.PasswordHash, &u.CreatedAt, &u.UpdatedAt)
+	err := r.Pool.QueryRow(ctx, query, email).Scan(
+		&u.ID, &u.Name, &u.Email, &u.PasswordHash, &u.Role, &u.CreatedAt,
+	)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, fmt.Errorf("%s: %w", op, errors.ErrNotFound)
@@ -87,13 +94,15 @@ func (r *UserRepoPostgres) GetByUsername(ctx context.Context, username string) (
 	const op = "UserRepo.GetByUsername"
 
 	query := `
-		SELECT id, name, email, password_hash, created_at, updated_at
+		SELECT id, name, email, password_hash, role, created_at
 		FROM users
 		WHERE name = $1
 	`
 
 	var u entity.User
-	err := r.Pool.QueryRow(ctx, query, username).Scan(&u.ID, &u.Name, &u.Email, &u.PasswordHash, &u.CreatedAt, &u.UpdatedAt)
+	err := r.Pool.QueryRow(ctx, query, username).Scan(
+		&u.ID, &u.Name, &u.Email, &u.PasswordHash, &u.Role, &u.CreatedAt,
+	)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, fmt.Errorf("%s: %w", op, errors.ErrNotFound)
@@ -107,10 +116,7 @@ func (r *UserRepoPostgres) GetByUsername(ctx context.Context, username string) (
 func (r *UserRepoPostgres) Delete(ctx context.Context, id int64) error {
 	const op = "UserRepo.Delete"
 
-	query := `
-		DELETE FROM users
-		WHERE id = $1
-	`
+	query := `DELETE FROM users WHERE id = $1`
 
 	tag, err := r.Pool.Exec(ctx, query, id)
 	if err != nil {

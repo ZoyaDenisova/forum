@@ -7,6 +7,6 @@ type User struct {
 	Name         string
 	Email        string
 	PasswordHash string // bcrypt-хэш
+	Role         string
 	CreatedAt    time.Time
-	UpdatedAt    time.Time
 }
