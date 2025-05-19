@@ -35,7 +35,7 @@ function CategoryIndexPage() {
   })
 
   const deleteTopicMutation = useMutation({
-    mutationFn: (topicId: string) => deleteTopicApi(categoryId!, topicId),
+    mutationFn: (topicId: string) => deleteTopicApi(topicId),
     onSuccess: () => {
       toast.success("Тема успешно удалена");
       queryClient.invalidateQueries({ queryKey: ['topics', categoryId] });

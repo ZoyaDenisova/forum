@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useForm } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { z } from 'zod';
-import { fetchCategories, createTopic as apiCreateTopic } from '@/app/api/forum';
+import { fetchCategories, addTopic as apiAddTopic } from '@/app/api/forum';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import type { Category, Topic } from '@/types/forum';
@@ -43,15 +43,11 @@ export function CreateTopicForm({ initialCategoryId }: CreateTopicFormProps) {
   >({
     mutationFn: async (newTopicData) => {
       if (!auth.user) throw new Error('Пользователь не авторизован для создания темы.');
-      return apiCreateTopic({
-        ...newTopicData,
-        author: auth.user.name,
-      });
+      return apiAddTopic(newTopicData);
     },
     onSuccess: (data) => {
       toast.success('Тема успешно создана!');
       queryClient.invalidateQueries({ queryKey: ['topics', data.categoryId] });
-      queryClient.invalidateQueries({ queryKey: ['topics'] }); 
       navigate({ to: '/categories/$categoryId/topics/$topicId', params: { categoryId: data.categoryId, topicId: data.id } });
     },
     onError: (error) => {

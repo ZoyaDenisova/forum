@@ -1,38 +1,82 @@
 import type { Category, Topic, TopicMessage, ChatMessage, MessageAuthor } from '@/types/forum';
 import type { User } from '@/types/auth'; // Предполагаем, что User импортируется
 
-const mockCategories: Category[] = [
-  {
-    id: '1',
-    name: 'Игры',
-    description: 'Обсуждение компьютерных и видеоигр',
-  },
-  {
-    id: '2',
-    name: 'Кино',
-    description: 'Новинки кинопроката, классика и сериалы',
-  },
-  {
-    id: '3',
-    name: 'Музыка',
-    description: 'Различные жанры, исполнители и альбомы',
-  },
-  {
-    id: '4',
-    name: 'Программирование',
-    description: 'Вопросы по разработке, языкам и технологиям',
-  },
-];
+// Базовый URL вашего API
+const API_BASE_URL = '/api';
 
-// Имитация API-запроса для получения категорий
-export const fetchCategories = async (): Promise<Category[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(mockCategories);
-    }, 500); // Имитация задержки сети
-  });
+// Helper to get JWT token from localStorage
+const getToken = (): string | null => {
+  // Пытаемся получить токен напрямую по ключу 'accessToken'
+  const token = localStorage.getItem('accessToken'); 
+  if (token) {
+    return token;
+  }
+  
+  // Оставим старую логику на случай, если где-то используется ключ 'auth'
+  // Но приоритет отдадим 'accessToken'
+  console.warn("accessToken not found directly, trying 'auth' key with a token property.");
+  const authData = localStorage.getItem('auth');
+  if (authData) {
+    try {
+      const parsedAuthData = JSON.parse(authData);
+      return parsedAuthData.token || null; 
+    } catch (e) {
+      console.error("Failed to parse auth data from localStorage with 'auth' key", e);
+      return null;
+    }
+  }
+  return null;
 };
 
+
+// Типы из Swagger (можно вынести в отдельный файл или генерировать)
+interface ApiCategoryResponse {
+  id: number;
+  title: string;
+  description: string;
+}
+
+interface ApiCreateCategoryRequest {
+  title: string;
+  description: string;
+}
+
+// Функция для маппинга ответа API к типу Category нашего фронтенда
+// На данный момент Category ожидает id: string, name: string. Swagger: id: number, title: string
+// Адаптируем наш тип Category или эту функцию.
+// Для совместимости, пока будем мапить title -> name и id -> id.toString()
+// В идеале, нужно будет обновить тип Category в src/types/forum.ts
+const mapApiCategoryToCategory = (apiCat: ApiCategoryResponse): Category => ({
+  id: apiCat.id.toString(), // Конвертируем id в строку для совместимости с текущим типом Category
+  name: apiCat.title,        // Маппим title на name
+  description: apiCat.description,
+});
+
+
+// Обновленная функция для получения категорий с сервера
+export const fetchCategories = async (): Promise<Category[]> => {
+  const response = await fetch(`${API_BASE_URL}/categories`);
+  if (!response.ok) {
+    // Можно добавить более детальную обработку ошибок на основе статуса ответа
+    throw new Error('Failed to fetch categories');
+  }
+  const apiCategories: ApiCategoryResponse[] = await response.json();
+  return apiCategories.map(mapApiCategoryToCategory);
+};
+
+// // Старый mockCategories - больше не нужен для fetchCategories
+// const mockCategories: Category[] = [
+//   {
+//     id: '1',
+//     name: 'Игры',
+//     description: 'Обсуждение компьютерных и видеоигр',
+//   },
+//   // ... другие мок-категории
+// ];
+
+// --- Существующие моки для тем и сообщений пока оставим без изменений ---
+// ... (весь код с mockTopics, fetchTopicsByCategoryId, mockTopicMessages и т.д. остается здесь)
+// ... существующий код ...
 const mockTopics: Topic[] = [
   {
     id: 't1',
@@ -70,26 +114,49 @@ const mockTopics: Topic[] = [
 
 // Имитация API-запроса для получения тем по ID категории
 export const fetchTopicsByCategoryId = async (categoryId: string): Promise<Topic[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const topics = mockTopics.filter(topic => topic.categoryId === categoryId);
-      resolve(topics);
-    }, 700); // Имитация задержки сети
-  });
+  const numericCategoryId = parseInt(categoryId, 10);
+  if (isNaN(numericCategoryId)) {
+    throw new Error('Invalid category ID format for fetching topics.');
+  }
+  const response = await fetch(`${API_BASE_URL}/categories/${numericCategoryId}/topics`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch topics for category ${categoryId}`);
+  }
+  const apiTopics: ApiTopicResponse[] = await response.json();
+  return apiTopics.map(mapApiTopicToTopic);
 };
 
 // Имитация API-запроса для получения данных одной категории (может понадобиться для заголовка)
 export const fetchCategoryById = async (categoryId: string): Promise<Category | undefined> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(mockCategories.find(cat => cat.id === categoryId));
-    }, 300);
-  });
+  // Эта функция тоже должна будет работать с API, если будет использоваться
+  // Пока оставим как есть или закомментируем, если не используется активно
+  console.warn("fetchCategoryById is using mock data or needs API integration");
+  const response = await fetch(`${API_BASE_URL}/categories/${categoryId}`);
+  if (!response.ok) {
+    if (response.status === 404) return undefined;
+    throw new Error(`Failed to fetch category ${categoryId}`);
+  }
+  const apiCategory: ApiCategoryResponse = await response.json();
+  return mapApiCategoryToCategory(apiCategory);
+  // return new Promise((resolve) => {
+  //   setTimeout(() => {
+  //     resolve(mockCategories.find(cat => cat.id === categoryId));
+  //   }, 300);
+  // });
 };
 
 // Имитация API-запроса для получения данных одной темы по ID
 export const fetchTopicById = async (topicId: string): Promise<Topic | undefined> => {
   console.log("API: fetching topic by id", topicId);
+  // TODO: Заменить на реальный API вызов, если нужно
+  // const response = await fetch(`${API_BASE_URL}/topics/${topicId}`);
+  // if (!response.ok) {
+  //   if (response.status === 404) return undefined;
+  //   throw new Error(`Failed to fetch topic ${topicId}`);
+  // }
+  // const apiTopic = await response.json(); // Нужен будет маппинг к Topic
+  // return mapApiTopicToTopic(apiTopic)
+
   return new Promise((resolve) => {
     setTimeout(() => {
       const topic = mockTopics.find(t => t.id === topicId);
@@ -126,6 +193,7 @@ let mockTopicMessages: TopicMessage[] = [
 
 export const fetchMessagesByTopicId = async (topicId: string): Promise<TopicMessage[]> => {
   console.log(`API: fetching messages for topic ${topicId}`);
+  // TODO: Заменить на реальный API вызов
   return new Promise((resolve) => {
     setTimeout(() => {
       const messages = mockTopicMessages.filter(msg => msg.topicId === topicId);
@@ -151,7 +219,7 @@ export const subscribeToTopicMessages = (topicId: string, callback: (message: To
   // Имитация случайных новых сообщений от других пользователей
   // В реальном приложении это не нужно, сообщения будут приходить от сервера
   const intervalId = setInterval(() => {
-    if (Math.random() < 0.80) { // 15% шанс получить новое сообщение каждые 5 секунд
+    if (Math.random() < 0.05) { // Уменьшим частоту для тестов
       const newMessage: TopicMessage = {
         id: `tm_auto_${messageCounter++}`,
         topicId,
@@ -182,6 +250,7 @@ export const sendTopicMessage = async (
   messageData: { author: string; content: string }
 ): Promise<TopicMessage> => {
   console.log(`API/WS: Sending message to topic ${topicId}`, messageData);
+    // TODO: Заменить на реальный API вызов (POST /topics/{topicId}/messages)
   return new Promise((resolve) => {
     setTimeout(() => {
       const newMessage: TopicMessage = {
@@ -213,7 +282,7 @@ export const createTopic = async (payload: CreateTopicPayload): Promise<Topic> =
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       // Проверка, существует ли категория
-      const categoryExists = mockCategories.some(cat => cat.id === payload.categoryId);
+      const categoryExists = mockTopics.some(topic => topic.categoryId === payload.categoryId);
       if (!categoryExists) {
         reject(new Error('Выбранная категория не существует.'));
         return;
@@ -248,72 +317,61 @@ let mockGeneralMessages: ChatMessage[] = [
   {
     id: 'gm2',
     text: 'Добро пожаловать на форум!',
-    author: mockSystemAuthor,
+    author: mockUserAuthor2,
     createdAt: new Date(Date.now() - 1000 * 60 * 10).toISOString(), // 10 минут назад
   },
   {
     id: 'gm3',
-    text: 'Какие планы на сегодня?',
-    author: mockUserAuthor2,
+    text: 'Какие планы на выходные?',
+    author: mockUserAuthor1,
     createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(), // 5 минут назад
   },
 ];
 
-const GENERAL_MESSAGES_PAGE_SIZE = 15; // Количество сообщений на страницу для "бесконечного скролла"
+// Имитация API-запроса для получения сообщений общего чата с пагинацией
+// Допустим, по 10 сообщений на страницу
+const GENERAL_MESSAGES_PER_PAGE = 10;
 
-// Имитация API для получения сообщений общего чата с пагинацией (для бесконечного скролла)
 export const fetchGeneralMessages = async (page: number = 1): Promise<{ messages: ChatMessage[], hasMore: boolean }> => {
+  console.log(`API: Fetching general messages page ${page}`);
   return new Promise((resolve) => {
     setTimeout(() => {
-      const sortedMessages = [...mockGeneralMessages].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      const startIndex = (page - 1) * GENERAL_MESSAGES_PAGE_SIZE;
-      const endIndex = startIndex + GENERAL_MESSAGES_PAGE_SIZE;
+      // Сортируем сообщения по дате (старые сначала)
+      const sortedMessages = [...mockGeneralMessages].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+      const startIndex = (page - 1) * GENERAL_MESSAGES_PER_PAGE;
+      const endIndex = startIndex + GENERAL_MESSAGES_PER_PAGE;
       const paginatedMessages = sortedMessages.slice(startIndex, endIndex);
       const hasMore = endIndex < sortedMessages.length;
-      
-      // Для чата обычно сообщения сортируются от старых к новым для отображения
-      resolve({ messages: paginatedMessages.sort((a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()), hasMore });
-    }, 400);
+      resolve({ messages: paginatedMessages, hasMore });
+    }, 500);
   });
 };
 
-// Эмуляция WebSocket для общего чата
-const generalChatSubscriptions = new Map<string, ((message: ChatMessage) => void)[]>();
-const GENERAL_CHAT_KEY = 'general'; // Ключ для подписок на общий чат
+// Имитация WebSocket подписки на общий чат
+let generalChatCallbacks: ((message: ChatMessage) => void)[] = [];
 let generalMessageCounter = mockGeneralMessages.length + 1;
 
 export const subscribeToGeneralChatMessages = (callback: (message: ChatMessage) => void) => {
-  if (!generalChatSubscriptions.has(GENERAL_CHAT_KEY)) {
-    generalChatSubscriptions.set(GENERAL_CHAT_KEY, []);
-  }
-  generalChatSubscriptions.get(GENERAL_CHAT_KEY)!.push(callback);
-  console.log('WS: Subscribed to general chat messages');
+  console.log('WS: Subscribing to general chat');
+  generalChatCallbacks.push(callback);
 
-  // Имитация случайных новых сообщений (можно убрать, если мешает отладке)
   const intervalId = setInterval(() => {
-    if (Math.random() < 0.9) { // 10% шанс на новое сообщение каждые 7 секунд
-      const randomAuthor = Math.random() > 0.5 ? mockUserAuthor1 : mockUserAuthor2;
+    if (Math.random() < 0.1) { // 10% шанс нового сообщения каждые 3 секунды
       const newMessage: ChatMessage = {
         id: `gm_auto_${generalMessageCounter++}`,
-        text: `Случайное сообщение №${generalMessageCounter -1} из общего чата. Lorem ipsum. `,
-        author: randomAuthor,
+        text: `Случайное сообщение в общем чате №${generalMessageCounter -1}`,
+        author: Math.random() > 0.5 ? mockUserAuthor1 : mockUserAuthor2,
         createdAt: new Date().toISOString(),
       };
       mockGeneralMessages.push(newMessage);
-      generalChatSubscriptions.get(GENERAL_CHAT_KEY)?.forEach(cb => cb(newMessage));
-      console.log('WS: Sent new mock general chat message:', newMessage);
+      generalChatCallbacks.forEach(cb => cb(newMessage));
     }
-  }, 7000);
+  }, 3000);
 
   return () => {
-    const subscribers = generalChatSubscriptions.get(GENERAL_CHAT_KEY)?.filter(cb => cb !== callback);
-    if (subscribers && subscribers.length > 0) {
-      generalChatSubscriptions.set(GENERAL_CHAT_KEY, subscribers);
-    } else {
-      generalChatSubscriptions.delete(GENERAL_CHAT_KEY);
-    }
+    console.log('WS: Unsubscribing from general chat');
+    generalChatCallbacks = generalChatCallbacks.filter(cb => cb !== callback);
     clearInterval(intervalId);
-    console.log('WS: Unsubscribed from general chat messages');
   };
 };
 
@@ -321,8 +379,8 @@ interface SendGeneralMessagePayload {
   text: string;
   author: MessageAuthor; // Ожидаем полного автора, т.к. на клиенте он будет известен
 }
-
 export const sendGeneralMessage = async (payload: SendGeneralMessagePayload): Promise<ChatMessage> => {
+  console.log('API/WS: Sending general message', payload);
   return new Promise((resolve) => {
     setTimeout(() => {
       const newMessage: ChatMessage = {
@@ -333,136 +391,259 @@ export const sendGeneralMessage = async (payload: SendGeneralMessagePayload): Pr
       };
       mockGeneralMessages.push(newMessage);
       // Уведомляем всех подписчиков общего чата
-      generalChatSubscriptions.get(GENERAL_CHAT_KEY)?.forEach(callback => callback(newMessage));
+      generalChatCallbacks.forEach(callback => callback(newMessage));
       resolve(newMessage);
     }, 150);
   });
 };
 
-// --- Админские функции для категорий ---
-let categoryIdCounter = mockCategories.length > 0 ? Math.max(...mockCategories.map(c => parseInt(c.id, 10))) + 1 : 1;
 
+// Payload для функции addCategory
+// Swagger ожидает title и description
 interface AddCategoryPayload {
-  name: string;
+  name: string; // Будет title в запросе к API
   description: string;
 }
 
-// Имитация API для добавления категории
+// Обновленная функция для добавления категории
 export const addCategory = async (payload: AddCategoryPayload): Promise<Category> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newCategory: Category = {
-        id: `${categoryIdCounter++}`,
-        name: payload.name,
-        description: payload.description,
-        // topicCount и postCount можно инициализировать нулями или не добавлять в мок, если они не обязательны сразу
-      };
-      mockCategories.push(newCategory); // Добавляем в наш моковый массив
-      console.log('API: Added category', newCategory);
-      console.log('API: Current mockCategories', mockCategories);
-      resolve(newCategory);
-    }, 500);
+  const token = getToken();
+  const apiRequestBody: ApiCreateCategoryRequest = {
+    title: payload.name, // Маппим name на title
+    description: payload.description,
+  };
+
+  const response = await fetch(`${API_BASE_URL}/categories`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` }),
+    },
+    body: JSON.stringify(apiRequestBody),
   });
+
+  if (!response.ok) {
+    // TODO: Обработать специфичные ошибки, например 400, 401
+    const errorData = await response.text();
+    console.error("Failed to add category:", errorData);
+    throw new Error(`Failed to add category. Status: ${response.status}. Message: ${errorData}`);
+  }
+  
+  const newApiCategory: ApiCategoryResponse = await response.json();
+  return mapApiCategoryToCategory(newApiCategory);
 };
 
-// Имитация API для удаления категории
+// Обновленная функция для удаления категории
 export const deleteCategory = async (categoryId: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = mockCategories.findIndex(cat => cat.id === categoryId);
-      if (index !== -1) {
-        // Перед удалением категории, убедимся, что нет тем, связанных с ней (или удалим их тоже)
-        // В данном случае, для упрощения, просто удаляем категорию
-        mockCategories.splice(index, 1);
-        resolve();
-      } else {
-        reject(new Error('Категория не найдена'));
-      }
-    }, 300);
+  const token = getToken();
+  // API ожидает числовой ID
+  const numericCategoryId = parseInt(categoryId, 10);
+  if (isNaN(numericCategoryId)) {
+    throw new Error('Invalid category ID format for deletion.');
+  }
+
+  const response = await fetch(`${API_BASE_URL}/categories/${numericCategoryId}`, {
+    method: 'DELETE',
+    headers: {
+      ...(token && { 'Authorization': `Bearer ${token}` }),
+    },
   });
+
+  if (!response.ok) {
+    // TODO: Обработать специфичные ошибки, например 404
+    const errorData = await response.text();
+    console.error("Failed to delete category:", errorData);
+    throw new Error(`Failed to delete category. Status: ${response.status}. Message: ${errorData}`);
+  }
+  // DELETE обычно возвращает 204 No Content, тело ответа будет пустым
 };
 
-// --- Функции для управления темами (заглушки) ---
-interface AddTopicPayload {
-  categoryId: string;
+
+// --- Функции для управления темами ---
+
+interface ApiTopicResponse {
+  id: number;
+  category_id: number;
+  author_id: number;
   title: string;
   description: string;
-  author: string; // В будущем это будет User ID из AuthContext
+  created_at: string;
 }
 
+interface ApiCreateTopicRequest {
+  category_id: number;
+  title: string;
+  description: string;
+}
+
+// Функция для маппинга ответа API к типу Topic нашего фронтенда
+const mapApiTopicToTopic = (apiTopic: ApiTopicResponse): Topic => ({
+  id: apiTopic.id.toString(),
+  categoryId: apiTopic.category_id.toString(),
+  title: apiTopic.title,
+  author: apiTopic.author_id.toString(), // Упрощение: используем ID автора как строку
+  description: apiTopic.description,
+  createdAt: apiTopic.created_at,
+});
+
+// Обновляем AddTopicPayload, чтобы он больше соответствовал тому, что может предоставить фронтенд
+// author будет браться из токена на бэке, так что с фронта его передавать не нужно в API
+interface AddTopicPayload {
+  categoryId: string; // Будет преобразован в number для API
+  title: string;
+  description: string;
+  // author: string; // Больше не нужен здесь, т.к. API его не принимает в теле запроса
+}
+
+// Обновленная функция для добавления темы
 export const addTopic = async (payload: AddTopicPayload): Promise<Topic> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const categoryExists = mockCategories.some(cat => cat.id === payload.categoryId);
-      if (!categoryExists) {
-        return reject(new Error('Категория не найдена'));
-      }
-      const newTopic: Topic = {
-        id: `t${Date.now()}_${Math.random().toString(36).substring(2, 7)}`, // Уникальный ID
-        categoryId: payload.categoryId,
-        title: payload.title,
-        description: payload.description,
-        author: payload.author,
-        createdAt: new Date().toISOString(),
-      };
-      mockTopics.unshift(newTopic); // Добавляем в начало
-      resolve(newTopic);
-    }, 500);
+  const token = getToken();
+  const numericCategoryId = parseInt(payload.categoryId, 10);
+  if (isNaN(numericCategoryId)) {
+    throw new Error('Invalid categoryId for addTopic');
+  }
+
+  const apiRequestBody: ApiCreateTopicRequest = {
+    category_id: numericCategoryId,
+    title: payload.title,
+    description: payload.description,
+  };
+
+  const response = await fetch(`${API_BASE_URL}/topics`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` }),
+    },
+    body: JSON.stringify(apiRequestBody),
   });
+
+  if (!response.ok) {
+    const errorData = await response.text();
+    console.error("Failed to add topic:", errorData);
+    throw new Error(`Failed to add topic. Status: ${response.status}. Message: ${errorData}`);
+  }
+  const newApiTopic: ApiTopicResponse = await response.json();
+  return mapApiTopicToTopic(newApiTopic);
 };
 
-export const deleteTopic = async (categoryId: string, topicId: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = mockTopics.findIndex(topic => topic.id === topicId && topic.categoryId === categoryId);
-      if (index !== -1) {
-        mockTopics.splice(index, 1);
-        // Также нужно удалить все сообщения этой темы
-        mockTopicMessages = mockTopicMessages.filter(msg => msg.topicId !== topicId);
-        resolve();
-      } else {
-        reject(new Error('Тема не найдена или не принадлежит указанной категории'));
-      }
-    }, 500);
+// Обновленная функция для удаления темы
+// API DELETE /topics/{id} ожидает только topicId
+export const deleteTopic = async (topicId: string): Promise<void> => {
+  const token = getToken();
+  const numericTopicId = parseInt(topicId, 10);
+  if (isNaN(numericTopicId)) {
+    throw new Error('Invalid topic ID format for deletion.');
+  }
+
+  const response = await fetch(`${API_BASE_URL}/topics/${numericTopicId}`, {
+    method: 'DELETE',
+    headers: {
+      ...(token && { 'Authorization': `Bearer ${token}` }),
+    },
   });
+
+  if (!response.ok) {
+    const errorData = await response.text();
+    console.error("Failed to delete topic:", errorData);
+    throw new Error(`Failed to delete topic. Status: ${response.status}. Message: ${errorData}`);
+  }
+  // DELETE обычно возвращает 204 No Content
 };
 
-// --- Функции для управления сообщениями в темах (заглушки) ---
+
 interface EditMessagePayload {
-  topicId: string;
+  topicId: string; // Не нужен для API, если id сообщения уникален глобально
   messageId: string;
   newContent: string;
 }
 
 export const editTopicMessage = async (payload: EditMessagePayload): Promise<TopicMessage> => {
+   // TODO: Заменить на реальный API вызов (PUT /messages/{id})
+   // API ожидает content: string в теле. messageId в пути.
+  console.warn("editTopicMessage is using mock data");
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const messageIndex = mockTopicMessages.findIndex(msg => msg.id === payload.messageId && msg.topicId === payload.topicId);
-      if (messageIndex !== -1) {
-        mockTopicMessages[messageIndex].content = payload.newContent;
-        // В реальном приложении можно добавить поле updatedAt
-        // mockTopicMessages[messageIndex].updatedAt = new Date().toISOString(); 
-        resolve(mockTopicMessages[messageIndex]);
-      } else {
-        reject(new Error('Сообщение не найдено или не принадлежит указанной теме'));
+      const messageIndex = mockTopicMessages.findIndex(msg => msg.id === payload.messageId);
+      if (messageIndex === -1) {
+        return reject(new Error("Message not found"));
       }
-    }, 300);
+      mockTopicMessages[messageIndex] = {
+        ...mockTopicMessages[messageIndex],
+        content: payload.newContent,
+        // Обычно сервер обновляет и дату редактирования, здесь для простоты не делаем
+      };
+      resolve(mockTopicMessages[messageIndex]);
+    }, 200);
   });
 };
 
 export const deleteTopicMessage = async (topicId: string, messageId: string): Promise<void> => {
+  // TODO: Заменить на реальный API вызов (DELETE /messages/{id})
+  // API ожидает messageId в пути. topicId не нужен.
+  console.warn("deleteTopicMessage is using mock data");
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // mockTopicMessages = mockTopicMessages.filter(msg => msg.id !== messageId);
+      console.log(`Mock deletion of message ${messageId} from topic ${topicId}`);
+      resolve();
+    }, 200);
+  });
+};
+
+// Заглушка для функции получения всех пользователей (для админки)
+// В реальном приложении здесь был бы вызов к /users эндпоинту
+export const fetchAllUsers = async (): Promise<User[]> => {
+  console.warn("fetchAllUsers is using mock data");
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Примерные моковые данные
+      resolve([
+        { id: 'usr1', name: 'adminUser', email: 'admin@example.com', role: 'admin', created_at: new Date().toISOString() },
+        { id: 'usr2', name: 'alice_wonder', email: 'alice@example.com', role: 'user', created_at: new Date().toISOString() },
+        { id: 'usr3', name: 'bob_the_builder', email: 'bob@example.com', role: 'user', created_at: new Date().toISOString() },
+        { id: 'usr4', name: 'charlie_brown', email: 'charlie@example.com', role: 'user', created_at: new Date().toISOString() },
+      ]);
+    }, 500);
+  });
+};
+
+// Предположим, что у нас есть эндпоинт для обновления роли пользователя
+// PUT /users/{userId}/role  с телом { role: "admin" | "user" }
+export const updateUserRole = async (userId: string, newRole: 'admin' | 'user'): Promise<User> => {
+  console.warn(`updateUserRole is using mock data for userId: ${userId}, newRole: ${newRole}`);
+  // TODO: Заменить на реальный API вызов
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const initialLength = mockTopicMessages.length;
-      mockTopicMessages = mockTopicMessages.filter(msg => !(msg.id === messageId && msg.topicId === topicId));
-      if (mockTopicMessages.length < initialLength) {
-        resolve();
-      } else {
-        reject(new Error('Сообщение не найдено или не принадлежит указанной теме для удаления'));
-      }
+      // В реальном приложении мы бы нашли пользователя в мок-данных и обновили его,
+      // но здесь просто вернем "обновленного" пользователя для примера
+      // Это чисто для имитации и не будет обновлять данные в fetchAllUsers
+      const mockUpdatedUser: User = {
+        id: userId,
+        name: `user_${userId}`, // Заглушка, исправлено с username на name
+        email: `${userId}@example.com`, // Заглушка
+        role: newRole,
+        created_at: new Date().toISOString()
+      };
+      resolve(mockUpdatedUser);
+      // Если бы мы хотели обновить мок-данные в fetchAllUsers, нужно было бы найти пользователя
+      // и изменить его роль, но это усложнит моки.
     }, 300);
   });
 };
 
-// Заглушка для API получения всех пользователей (для админки)
+// Имитация API-запроса для создания темы (старая версия, возможно, дубликат)
+// Эта функция createTopic кажется дублирует addTopic, но с другим payload.
+// Оставим addTopic как основную.
+// export const createTopic = async (payload: CreateTopicPayload): Promise<Topic> => { ... }
+
+// Убедимся, что все экспорты на месте
+// fetchCategories, addCategory, deleteCategory - обновлены
+// fetchTopicsByCategoryId, fetchCategoryById, fetchTopicById - пока моки или частично API
+// addTopic, deleteTopic - пока моки
+// fetchMessagesByTopicId, subscribeToTopicMessages, sendTopicMessage - моки/WS-эмуляция
+// editTopicMessage, deleteTopicMessage - моки
+// fetchAllUsers, updateUserRole - моки
+// fetchGeneralMessages, subscribeToGeneralChatMessages, sendGeneralMessage - моKI/WS-эмуляция
+
 // ... existing code ... 
