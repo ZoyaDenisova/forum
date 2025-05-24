@@ -57,3 +57,5 @@
 {"level":"info","time":"2025-05-19T13:53:22.460+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
 {"level":"info","time":"2025-05-19T13:53:29.447+0400","caller":"app/app.go:28","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 chat-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
 {"level":"info","time":"2025-05-19T13:53:32.032+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
+{"level":"info","time":"2025-05-19T14:51:25.100+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-19T14:51:25.100+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}

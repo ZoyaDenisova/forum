@@ -135,6 +135,8 @@ func (h *CategoryHandler) UpdateCategory(c *gin.Context) {
 		return
 	}
 	c.Status(http.StatusNoContent)
+	c.AbortWithStatus()
+	//todo вместо ретерн делать аборт
 }
 
 // DeleteCategory — DELETE /categories/{id}

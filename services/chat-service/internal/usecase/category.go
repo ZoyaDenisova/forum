@@ -93,3 +93,5 @@ func (uc *CategoryUsecase) DeleteCategory(ctx context.Context, id int64) error {
 	}
 	return nil
 }
+
+//todo добавить логи на уровень юскейсов

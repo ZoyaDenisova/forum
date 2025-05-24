@@ -601,3 +601,8 @@
 {"level":"info","time":"2025-05-19T14:23:14.271+0400","caller":"http/middleware.go:53","msg":"HTTP request%!(EXTRA string=method, string=GET, string=path, string=/auth/sessions, string=status, int=200, string=duration, time.Duration=499.7µs)"}
 {"level":"info","time":"2025-05-19T14:23:14.296+0400","caller":"http/middleware.go:53","msg":"HTTP request%!(EXTRA string=method, string=GET, string=path, string=/auth/sessions, string=status, int=200, string=duration, time.Duration=1.5003ms)"}
 {"level":"info","time":"2025-05-19T14:27:36.333+0400","caller":"http/middleware.go:53","msg":"HTTP request%!(EXTRA string=method, string=GET, string=path, string=/auth/me, string=status, int=200, string=duration, time.Duration=1.607ms)"}
+{"level":"info","time":"2025-05-19T14:37:12.009+0400","caller":"http/middleware.go:53","msg":"HTTP request%!(EXTRA string=method, string=POST, string=path, string=/auth/login, string=status, int=200, string=duration, time.Duration=132.9428ms)"}
+{"level":"info","time":"2025-05-24T20:09:46.940+0400","caller":"app/app.go:29","msg":"service starting%!(EXTRA zapcore.Field={name 15 0 auth-service <nil>}, zapcore.Field={version 15 0 1.0.0 <nil>})"}
+{"level":"info","time":"2025-05-24T20:09:46.973+0400","caller":"app/app.go:85","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8080 <nil>})"}
+{"level":"info","time":"2025-05-24T20:09:46.973+0400","caller":"grpc/router.go:23","msg":"gRPC router initialized"}
+{"level":"info","time":"2025-05-24T20:09:46.974+0400","caller":"app/app.go:99","msg":"starting gRPC server%!(EXTRA zapcore.Field={addr 15 0 :50051 <nil>})"}
