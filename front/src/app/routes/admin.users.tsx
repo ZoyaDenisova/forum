@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchAllUsers, deleteUser as deleteUserApi, updateUser as updateUserApi } from '@/app/api/users';
+import { fetchAllUsers, blockUser, unblockUser } from '@/app/api/users';
 import type { User } from '@/types/auth';
 import { 
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Edit3, Trash2 } from 'lucide-react';
+import { Edit3, Trash2, Lock, Unlock } from 'lucide-react';
 import { toast } from "sonner";
 import { useState, useEffect } from 'react';
 import { useForm, Controller } from "react-hook-form";
@@ -41,77 +41,28 @@ function AdminUsersPage() {
     queryFn: fetchAllUsers
   });
 
-  const [isEditUserDialogOpen, setIsEditUserDialogOpen] = useState(false);
-  const [selectedUserForEdit, setSelectedUserForEdit] = useState<User | null>(null);
-
-  const {
-    control,
-    handleSubmit,
-    reset,
-    setValue,
-    formState: { errors, isSubmitting },
-  } = useForm<UserEditFormData>({
-    resolver: zodResolver(userEditSchema),
-    defaultValues: { name: '', email: '', role: '' },
-  });
-
-  useEffect(() => {
-    if (selectedUserForEdit) {
-      setValue('name', selectedUserForEdit.name);
-      setValue('email', selectedUserForEdit.email);
-      setValue('role', selectedUserForEdit.role);
-    } else {
-      reset({ name: '', email: '', role: '' });
-    }
-  }, [selectedUserForEdit, setValue, reset]);
-
-  const deleteUserMutation = useMutation({
-    mutationFn: (userId: string | number) => {
-      console.log("AdminUsersPage: deleteUserMutation mutationFn called with userId:", userId);
-      return deleteUserApi(userId);
-    },
+  const blockUserMutation = useMutation({
+    mutationFn: (userId: string | number) => blockUser(userId),
     onSuccess: () => {
-      console.log("AdminUsersPage: deleteUserMutation onSuccess");
-      toast.success("Пользователь успешно удален");
+      toast.success('Пользователь заблокирован');
       queryClient.invalidateQueries({ queryKey: ['allUsers'] });
     },
     onError: (error: Error) => {
-      console.log("AdminUsersPage: deleteUserMutation onError", error);
-      toast.error(`Ошибка удаления пользователя: ${error.message}`);
+      toast.error(`Ошибка блокировки: ${error.message}`);
     },
   });
 
-  const handleDeleteUser = (userId: string | number) => {
-    console.log("AdminUsersPage: handleDeleteUser called with userId:", userId);
-    deleteUserMutation.mutate(userId);
-  };
-
-  const updateUserMutation = useMutation({
-    mutationFn: (data: { userId: string | number; userData: UserEditFormData }) =>
-      updateUserApi(data.userId, data.userData),
-    onSuccess: (updatedUser) => {
-      toast.success(`Данные пользователя ${updatedUser.name} успешно обновлены.`);
+  const unblockUserMutation = useMutation({
+    mutationFn: (userId: string | number) => unblockUser(userId),
+    onSuccess: () => {
+      toast.success('Пользователь разблокирован');
       queryClient.invalidateQueries({ queryKey: ['allUsers'] });
-      setIsEditUserDialogOpen(false);
-      setSelectedUserForEdit(null); 
     },
     onError: (error: Error) => {
-      toast.error(`Ошибка обновления пользователя: ${error.message}`);
+      toast.error(`Ошибка разблокировки: ${error.message}`);
     },
   });
 
-  const handleOpenEditUserDialog = (user: User) => {
-    setSelectedUserForEdit(user);
-    setIsEditUserDialogOpen(true);
-  };
-
-  const onEditUserSubmit = (data: UserEditFormData) => {
-    if (selectedUserForEdit) {
-      console.log("AdminUsersPage: onEditUserSubmit called with data:", data, "for userId:", selectedUserForEdit.id);
-      updateUserMutation.mutate({ userId: selectedUserForEdit.id, userData: data });
-    }
-  };
-  
   if (isLoading) {
     return (
       <Card>
@@ -177,31 +128,28 @@ function AdminUsersPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {new Date(user.created_at).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                      <Button variant="ghost" size="icon" title="Редактировать пользователя" onClick={() => handleOpenEditUserDialog(user)}>
-                        <Edit3 className="h-4 w-4" />
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="icon" title="Удалить">
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Вы уверены?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Это действие необратимо. Пользователь {user.name} будет удален.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Отмена</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDeleteUser(user.id)}>
-                              Удалить
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      {user.is_blocked ? (
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          title="Разблокировать" 
+                          onClick={() => unblockUserMutation.mutate(user.id)} 
+                          disabled={unblockUserMutation.isPending}
+                        >
+                          <Unlock className="h-4 w-4 text-green-600" />
+                        </Button>
+                      ) : (
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          title="Заблокировать" 
+                          onClick={() => blockUserMutation.mutate(user.id)} 
+                          disabled={blockUserMutation.isPending}
+                        >
+                          <Lock className="h-4 w-4 text-destructive" />
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -210,69 +158,6 @@ function AdminUsersPage() {
           </div>
         )}
       </CardContent>
-
-      <Dialog open={isEditUserDialogOpen} onOpenChange={(isOpen) => {
-        setIsEditUserDialogOpen(isOpen);
-        if (!isOpen) setSelectedUserForEdit(null);
-      }}>
-        <DialogContent className="sm:max-w-[480px]">
-          <DialogHeader>
-            <DialogTitle>Редактировать пользователя: {selectedUserForEdit?.name}</DialogTitle>
-            <DialogDescription>
-              Измените данные пользователя и нажмите "Сохранить".
-            </DialogDescription>
-          </DialogHeader>
-          {selectedUserForEdit && (
-            <form onSubmit={handleSubmit(onEditUserSubmit)} className="space-y-4 py-2">
-              <div>
-                <Label htmlFor="name-edit">Имя</Label>
-                <Controller
-                  name="name"
-                  control={control}
-                  render={({ field }) => <Input id="name-edit" {...field} />}
-                />
-                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>}
-              </div>
-              <div>
-                <Label htmlFor="email-edit">Email</Label>
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => <Input id="email-edit" type="email" {...field} />}
-                />
-                {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>}
-              </div>
-              <div>
-                <Label htmlFor="role-edit">Роль</Label>
-                <Controller
-                  name="role"
-                  control={control}
-                  render={({ field }) => (
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger id="role-edit">
-                        <SelectValue placeholder="Выберите роль" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="user">User</SelectItem>
-                        <SelectItem value="admin">Admin</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors.role && <p className="text-sm text-red-500 mt-1">{errors.role.message}</p>}
-              </div>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button type="button" variant="outline">Отмена</Button>
-                </DialogClose>
-                <Button type="submit" disabled={isSubmitting || updateUserMutation.isPending}>
-                  {isSubmitting || updateUserMutation.isPending ? "Сохранение..." : "Сохранить изменения"}
-                </Button>
-              </DialogFooter>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
     </Card>
   );
 } 

@@ -1,6 +1,6 @@
 import { createFileRoute, useParams, Link, Outlet, useMatches } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { fetchCategoryById } from '@/app/api/forum'
+import { fetchCategoryById, fetchTopicById } from '@/app/api/forum'
 import type { Category } from '@/types/forum'
 // Компоненты Card здесь больше не нужны, они в index.tsx и $topicId.tsx
 // Хлебные крошки
@@ -34,10 +34,22 @@ function CategoryLayoutPage() {
     enabled: !!categoryId, 
   })
   
+  const { data: topic, isLoading: isLoadingTopic, error: topicError } = useQuery({
+    queryKey: ['topic', topicId],
+    queryFn: () => topicId ? fetchTopicById(topicId) : Promise.resolve(undefined),
+    enabled: !!topicId,
+  });
+  
   // Загрузка списка тем теперь происходит в categories.$categoryId.index.tsx
 
   if (isLoadingCategory && !category) return (
     <div className="p-4 flex-grow"><p>Загрузка данных категории...</p></div>
+  );
+  if (isLoadingTopic && topicId) return (
+    <div className="p-4 flex-grow"><p>Загрузка темы...</p></div>
+  );
+  if (topicError) return (
+    <div className="p-4 flex-grow"><p className="text-red-500">Ошибка загрузки темы: {topicError.message}</p></div>
   );
 
   return (
@@ -69,7 +81,7 @@ function CategoryLayoutPage() {
             <>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Тема {topicId}</BreadcrumbPage>
+                <BreadcrumbPage>{topic ? topic.title : `Тема ${topicId}`}</BreadcrumbPage>
               </BreadcrumbItem>
             </>
           )}

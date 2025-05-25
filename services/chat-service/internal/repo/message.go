@@ -23,9 +23,9 @@ func (r *MessageRepoPostgres) Create(ctx context.Context, m *entity.Message) err
 	const op = "MessageRepo.Create"
 	const query = `
         INSERT INTO messages (topic_id, author_id, content, created_at)
-+    VALUES ($1, $2, $3, $4)
-+    RETURNING id,
-+              (SELECT name FROM users WHERE id = $2) AS author_name
+	    VALUES ($1, $2, $3, $4)
+	    RETURNING id,
+	              (SELECT name FROM users WHERE id = $2) AS author_name;
     `
 
 	if err := r.Pool.QueryRow(ctx, query,

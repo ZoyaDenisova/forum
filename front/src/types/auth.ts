@@ -19,6 +19,7 @@ export interface User {
   email: string;
   role: string; // Например, 'user', 'admin'
   created_at: string;
+  is_blocked: boolean;
 }
 
 export interface AuthErrorResponse {

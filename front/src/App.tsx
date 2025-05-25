@@ -80,26 +80,28 @@ export function App() {
       
       <div className="flex flex-grow">
         <main className={cn(
-          "flex-grow p-4 flex flex-col transition-all duration-300 ease-in-out",
-          {
-            [`md:mr-[${chatPanelWidth}px]`]: isChatPanelOpen, 
-            "mr-0": !isChatPanelOpen,
-          }
+          "flex-grow p-4 flex flex-col transition-all duration-300 ease-in-out"
         )}>
           <Outlet />
         </main>
-        
-        <aside className={cn(
-          "fixed top-[var(--header-app-height,60px)] right-0 bg-card border-l shadow-lg z-20",
-          "transition-transform duration-300 ease-in-out",
-          `w-[${chatPanelWidth}px]`,
-          "h-[calc(100vh-var(--header-app-height,60px))] overflow-y-auto", 
-          {
-            "translate-x-0": isChatPanelOpen,
-            "translate-x-full": !isChatPanelOpen,
-          }
-        )}>
-          <GeneralChatPanel />
+        <aside
+          className={cn(
+            "relative flex-shrink-0 transition-all duration-300 ease-in-out",
+          )}
+          style={{ width: isChatPanelOpen ? `${chatPanelWidth}px` : '0px' }}
+        >
+          <div
+            className={cn(
+              "sticky transition-transform duration-300 ease-in-out z-20 bg-card border-l shadow-lg overflow-y-auto",
+              isChatPanelOpen ? "translate-x-0" : "translate-x-full",
+            )}
+            style={{
+              top: 'var(--header-app-height, 60px)',
+              height: 'calc(100vh - var(--header-app-height, 60px))',
+            }}
+          >
+            <GeneralChatPanel />
+          </div>
         </aside>
       </div>
 

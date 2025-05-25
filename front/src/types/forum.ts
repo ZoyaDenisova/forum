@@ -9,9 +9,8 @@ export interface Topic {
   id: string;
   categoryId: string; // Связь с категорией
   title: string;
-  // Описание темы
-  author: string; // Имя автора, в будущем может быть User ID/объект
-  // Описание темы, не первый пост
+  author: string; // ID автора (для проверок)
+  authorName: string; // Имя автора (для отображения)
   description: string; 
   createdAt: string; // Дата создания в формате ISO
 }
@@ -19,10 +18,11 @@ export interface Topic {
 export interface TopicMessage {
   id: string;
   topicId: string;
-  author: string; // Имя автора, в будущем User ID/объект
-  content: string; // Переименуем в content для единообразия с TopicMessage
-  createdAt: string; // Дата создания в формате ISO
-  // parentMessageId?: string; // Для ответов на сообщения, пока не реализуем
+  author: string; // ID автора (для проверок)
+  authorName: string; // Имя автора (для отображения)
+  content: string;
+  createdAt: string;
+  // parentMessageId?: string;
 }
 
 // Тип для автора сообщения, может быть переиспользован

@@ -1,5 +1,6 @@
 import type { Category, Topic, TopicMessage, ChatMessage, MessageAuthor } from '@/types/forum';
 import type { User } from '@/types/auth'; // Предполагаем, что User импортируется
+import { fetchWithAuth } from './http-client';
 
 // Базовый URL вашего API
 const API_BASE_URL = '/api';
@@ -55,7 +56,7 @@ const mapApiCategoryToCategory = (apiCat: ApiCategoryResponse): Category => ({
 
 // Обновленная функция для получения категорий с сервера
 export const fetchCategories = async (): Promise<Category[]> => {
-  const response = await fetch(`${API_BASE_URL}/categories`);
+  const response = await fetchWithAuth(`/categories`);
   if (!response.ok) {
     // Можно добавить более детальную обработку ошибок на основе статуса ответа
     throw new Error('Failed to fetch categories');
@@ -77,40 +78,7 @@ export const fetchCategories = async (): Promise<Category[]> => {
 // --- Существующие моки для тем и сообщений пока оставим без изменений ---
 // ... (весь код с mockTopics, fetchTopicsByCategoryId, mockTopicMessages и т.д. остается здесь)
 // ... существующий код ...
-const mockTopics: Topic[] = [
-  {
-    id: 't1',
-    categoryId: '1',
-    title: 'CS — ошибка при заходе в игру',
-    author: 'User123',
-    description: 'При запуске CS получаю ошибку XYZ. Кто-нибудь сталкивался?',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 часа назад
-  },
-  {
-    id: 't2',
-    categoryId: '1',
-    title: 'Лучшие моды для Cyberpunk 2077',
-    author: 'CyberFan',
-    description: 'Делимся находками лучших модификаций для CP2077.',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 день назад
-  },
-  {
-    id: 't3',
-    categoryId: '2',
-    title: 'Обсуждение нового фильма "Дюна: Часть вторая"',
-    author: 'MovieGuru',
-    description: 'Как вам новый фильм? Делитесь впечатлениями!',
-    createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 минут назад
-  },
-  {
-    id: 't4',
-    categoryId: '4',
-    title: 'Вопрос по React Hooks: useEffect и зависимости',
-    author: 'ReactDev',
-    description: 'Не могу понять, как правильно указать зависимости для useEffect...',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(), // 5 часов назад
-  },
-];
+
 
 // Имитация API-запроса для получения тем по ID категории
 export const fetchTopicsByCategoryId = async (categoryId: string): Promise<Topic[]> => {
@@ -118,7 +86,7 @@ export const fetchTopicsByCategoryId = async (categoryId: string): Promise<Topic
   if (isNaN(numericCategoryId)) {
     throw new Error('Invalid category ID format for fetching topics.');
   }
-  const response = await fetch(`${API_BASE_URL}/categories/${numericCategoryId}/topics`);
+  const response = await fetchWithAuth(`/categories/${numericCategoryId}/topics`);
   if (!response.ok) {
     throw new Error(`Failed to fetch topics for category ${categoryId}`);
   }
@@ -131,7 +99,7 @@ export const fetchCategoryById = async (categoryId: string): Promise<Category | 
   // Эта функция тоже должна будет работать с API, если будет использоваться
   // Пока оставим как есть или закомментируем, если не используется активно
   console.warn("fetchCategoryById is using mock data or needs API integration");
-  const response = await fetch(`${API_BASE_URL}/categories/${categoryId}`);
+  const response = await fetchWithAuth(`/categories/${categoryId}`);
   if (!response.ok) {
     if (response.status === 404) return undefined;
     throw new Error(`Failed to fetch category ${categoryId}`);
@@ -148,44 +116,99 @@ export const fetchCategoryById = async (categoryId: string): Promise<Category | 
 // Имитация API-запроса для получения данных одной темы по ID
 export const fetchTopicById = async (topicId: string): Promise<Topic | undefined> => {
   console.log("API: fetching topic by id", topicId);
-  // TODO: Заменить на реальный API вызов, если нужно
-  // const response = await fetch(`${API_BASE_URL}/topics/${topicId}`);
-  // if (!response.ok) {
-  //   if (response.status === 404) return undefined;
-  //   throw new Error(`Failed to fetch topic ${topicId}`);
-  // }
-  // const apiTopic = await response.json(); // Нужен будет маппинг к Topic
-  // return mapApiTopicToTopic(apiTopic)
+  const numericTopicId = parseInt(topicId, 10);
+  if (isNaN(numericTopicId)) {
+    console.error('Invalid topic ID format for fetchTopicById:', topicId);
+    // Можно вернуть undefined или выбросить ошибку, в зависимости от ожидаемого поведения
+    return undefined; 
+  }
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const topic = mockTopics.find(t => t.id === topicId);
-      console.log("API: found topic", topic);
-      resolve(topic);
-    }, 400); // Имитация задержки сети
-  });
+  const response = await fetchWithAuth(`/topics/${numericTopicId}`);
+  if (!response.ok) {
+    if (response.status === 404) {
+      console.warn(`API: Topic with id ${topicId} not found (404).`);
+      return undefined;
+    }
+    const errorText = await response.text().catch(() => 'Failed to read error response');
+    console.error(`API: Failed to fetch topic ${topicId}. Status: ${response.status}. Body: ${errorText}`);
+    throw new Error(`Failed to fetch topic ${topicId}. Status: ${response.status}`);
+  }
+  // ApiTopicResponse уже определен и используется в mapApiTopicToTopic
+  const apiTopic: ApiTopicResponse = await response.json(); 
+  console.log("API: fetched topic data", apiTopic);
+  return mapApiTopicToTopic(apiTopic);
 };
 
 // --- Сообщения в темах ---
+
+// DTO из swagger.json для сообщений
+interface TopicMessageDto {
+  id: number;
+  author_id: number;
+  author_name: string;
+  content: string;
+  created_at: string;
+  // topic_id отсутствует в TopicMessageDto, будем добавлять его из параметра функции
+}
+
+interface CreateTopicMessageDto {
+  content: string;
+}
+
+interface UpdateTopicMessageDto {
+  content: string;
+}
+
+// Универсальный парсер времени: принимает число (секунды или миллисекунды) или строку, возвращает ISO-строку
+function parseToIsoString(ts: string | number): string {
+  if (typeof ts === 'number') {
+    // Если число меньше 1e12 — это секунды, иначе миллисекунды
+    const ms = ts < 1e12 ? ts * 1000 : ts;
+    return new Date(ms).toISOString();
+  }
+  if (typeof ts === 'string' && /^\d+$/.test(ts)) {
+    // Строка-число
+    const num = Number(ts);
+    const ms = num < 1e12 ? num * 1000 : num;
+    return new Date(ms).toISOString();
+  }
+  // Если это уже ISO-строка или что-то другое — пробуем как есть
+  return new Date(ts).toISOString();
+}
+
+// Функция для маппинга TopicMessageDto к TopicMessage (фронтенд тип)
+const mapApiTopicMessageToTopicMessage = (apiMsg: TopicMessageDto, topicId: string): TopicMessage => ({
+  id: apiMsg.id.toString(),
+  topicId: topicId,
+  author: apiMsg.author_id.toString(),
+  authorName: apiMsg.author_name,
+  content: apiMsg.content,
+  createdAt: parseToIsoString(apiMsg.created_at),
+});
+
+
 let mockTopicMessages: TopicMessage[] = [
   {
     id: 'tm1',
     topicId: 't1',
-    author: 'AdminHelper',
+    author: '1',
+    authorName: 'AdminHelper',
     content: 'Попробуйте проверить целостность файлов игры в Steam.',
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 1.5).toISOString(),
   },
   {
     id: 'tm2',
     topicId: 't1',
-    author: 'User123',
+    author: '1',
+    authorName: 'User 1',
     content: 'Проверил, не помогло :(',
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 1).toISOString(),
   },
   {
     id: 'tm3',
     topicId: 't3',
-    author: 'CinemaFan',
+    author: '3',
+    authorName: 'User 3',
     content: 'Фильм просто пушка! Визуал и звук на высоте.',
     createdAt: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
   },
@@ -193,13 +216,21 @@ let mockTopicMessages: TopicMessage[] = [
 
 export const fetchMessagesByTopicId = async (topicId: string): Promise<TopicMessage[]> => {
   console.log(`API: fetching messages for topic ${topicId}`);
-  // TODO: Заменить на реальный API вызов
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const messages = mockTopicMessages.filter(msg => msg.topicId === topicId);
-      resolve(messages.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()));
-    }, 600);
-  });
+  const numericTopicId = parseInt(topicId, 10);
+  if (isNaN(numericTopicId)) {
+    console.error('Invalid topic ID format for fetchMessagesByTopicId:', topicId);
+    return []; // или throw new Error
+  }
+
+  const response = await fetchWithAuth(`/topics/${numericTopicId}/messages`);
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => 'Failed to read error response');
+    console.error(`API: Failed to fetch messages for topic ${topicId}. Status: ${response.status}. Body: ${errorText}`);
+    throw new Error(`Failed to fetch messages for topic ${topicId}. Status: ${response.status}`);
+  }
+  const apiMessages: TopicMessageDto[] = await response.json();
+  console.log(`API: fetched ${apiMessages.length} messages for topic ${topicId}`);
+  return apiMessages.map(apiMsg => mapApiTopicMessageToTopicMessage(apiMsg, topicId));
 };
 
 // Имитация WebSocket подписки
@@ -210,7 +241,7 @@ let messageCounter = mockTopicMessages.length + 1;
 // Здесь для простоты мы будем эмулировать отдельные "потоки" для каждой темы
 
 export const subscribeToTopicMessages = (topicId: string, callback: (message: TopicMessage) => void) => {
-  console.log(`WS: Subscribing to messages for topic ${topicId}`);
+  console.log(`WS: Subscribing to messages for topic ${topicId} (MOCK IMPLEMENTATION)`);
   if (!topicSubscriptions.has(topicId)) {
     topicSubscriptions.set(topicId, []);
   }
@@ -224,17 +255,18 @@ export const subscribeToTopicMessages = (topicId: string, callback: (message: To
         id: `tm_auto_${messageCounter++}`,
         topicId,
         author: `RandomUser${Math.floor(Math.random() * 100)}`,
+        authorName: `RandomUser${Math.floor(Math.random() * 100)}`,
         content: `Это случайно сгенерированное сообщение №${messageCounter -1} для темы ${topicId}. Lorem ipsum dolor sit amet. `,
         createdAt: new Date().toISOString(),
       };
-      mockTopicMessages.push(newMessage);
+      // mockTopicMessages.push(newMessage); // Не нужно добавлять в mockTopicMessages, если API реально работает
       topicSubscriptions.get(topicId)?.forEach(cb => cb(newMessage));
       console.log(`WS: Sent new mock message to topic ${topicId}:`, newMessage);
     }
   }, 5000);
 
   return () => {
-    console.log(`WS: Unsubscribing from messages for topic ${topicId}`);
+    console.log(`WS: Unsubscribing from messages for topic ${topicId} (MOCK IMPLEMENTATION)`);
     const subscribers = topicSubscriptions.get(topicId)?.filter(cb => cb !== callback);
     if (subscribers && subscribers.length > 0) {
       topicSubscriptions.set(topicId, subscribers);
@@ -249,58 +281,35 @@ export const sendTopicMessage = async (
   topicId: string, 
   messageData: { author: string; content: string }
 ): Promise<TopicMessage> => {
-  console.log(`API/WS: Sending message to topic ${topicId}`, messageData);
-    // TODO: Заменить на реальный API вызов (POST /topics/{topicId}/messages)
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newMessage: TopicMessage = {
-        id: `tm${messageCounter++}`,
-        topicId,
-        author: messageData.author, // В будущем здесь будет ID текущего пользователя
-        content: messageData.content,
-        createdAt: new Date().toISOString(),
-      };
-      mockTopicMessages.push(newMessage);
-      // Уведомляем всех подписчиков этой темы
-      topicSubscriptions.get(topicId)?.forEach(callback => callback(newMessage));
-      resolve(newMessage);
-    }, 200);
+  console.log(`API: Sending message to topic ${topicId}`, { content: messageData.content });
+  const numericTopicId = parseInt(topicId, 10);
+
+  if (isNaN(numericTopicId)) {
+    console.error('Invalid topic ID format for sendTopicMessage:', topicId);
+    throw new Error('Invalid topic ID format.');
+  }
+
+  const apiRequestBody: CreateTopicMessageDto = {
+    content: messageData.content,
+  };
+
+  const response = await fetchWithAuth(`/topics/${numericTopicId}/messages`, {
+    method: 'POST',
+    body: JSON.stringify(apiRequestBody),
   });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => 'Failed to read error response');
+    console.error(`API: Failed to send message to topic ${topicId}. Status: ${response.status}. Body: ${errorText}`);
+    throw new Error(`Failed to send message. Status: ${response.status}`);
+  }
+  
+  const newApiMessage: TopicMessageDto = await response.json();
+  return mapApiTopicMessageToTopicMessage(newApiMessage, topicId);
 };
 
 // --- Добавляем функцию создания темы ---
-interface CreateTopicPayload {
-  title: string;
-  description: string;
-  categoryId: string;
-  author: string; // Пока просто имя автора, в будущем может быть User ID
-}
 
-let topicIdCounter = mockTopics.length + 1; // Простой счетчик для ID новых тем
-
-export const createTopic = async (payload: CreateTopicPayload): Promise<Topic> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // Проверка, существует ли категория
-      const categoryExists = mockTopics.some(topic => topic.categoryId === payload.categoryId);
-      if (!categoryExists) {
-        reject(new Error('Выбранная категория не существует.'));
-        return;
-      }
-
-      const newTopic: Topic = {
-        id: `t${topicIdCounter++}`,
-        categoryId: payload.categoryId,
-        title: payload.title,
-        author: payload.author, // В реальном API это будет браться из сессии/токена
-        description: payload.description,
-        createdAt: new Date().toISOString(),
-      };
-      mockTopics.unshift(newTopic); // Добавляем в начало массива для наглядности
-      resolve(newTopic);
-    }, 300); // Имитация задержки сети
-  });
-};
 
 // --- Общий чат ---
 const mockSystemAuthor: MessageAuthor = { id: 'system', name: 'Система' };
@@ -407,23 +416,17 @@ interface AddCategoryPayload {
 
 // Обновленная функция для добавления категории
 export const addCategory = async (payload: AddCategoryPayload): Promise<Category> => {
-  const token = getToken();
   const apiRequestBody: ApiCreateCategoryRequest = {
-    title: payload.name, // Маппим name на title
+    title: payload.name,
     description: payload.description,
   };
 
-  const response = await fetch(`${API_BASE_URL}/categories`, {
+  const response = await fetchWithAuth('/categories', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
-    },
     body: JSON.stringify(apiRequestBody),
   });
 
   if (!response.ok) {
-    // TODO: Обработать специфичные ошибки, например 400, 401
     const errorData = await response.text();
     console.error("Failed to add category:", errorData);
     throw new Error(`Failed to add category. Status: ${response.status}. Message: ${errorData}`);
@@ -435,27 +438,20 @@ export const addCategory = async (payload: AddCategoryPayload): Promise<Category
 
 // Обновленная функция для удаления категории
 export const deleteCategory = async (categoryId: string): Promise<void> => {
-  const token = getToken();
-  // API ожидает числовой ID
   const numericCategoryId = parseInt(categoryId, 10);
   if (isNaN(numericCategoryId)) {
     throw new Error('Invalid category ID format for deletion.');
   }
 
-  const response = await fetch(`${API_BASE_URL}/categories/${numericCategoryId}`, {
+  const response = await fetchWithAuth(`/categories/${numericCategoryId}`, {
     method: 'DELETE',
-    headers: {
-      ...(token && { 'Authorization': `Bearer ${token}` }),
-    },
   });
 
   if (!response.ok) {
-    // TODO: Обработать специфичные ошибки, например 404
     const errorData = await response.text();
     console.error("Failed to delete category:", errorData);
     throw new Error(`Failed to delete category. Status: ${response.status}. Message: ${errorData}`);
   }
-  // DELETE обычно возвращает 204 No Content, тело ответа будет пустым
 };
 
 
@@ -465,6 +461,7 @@ interface ApiTopicResponse {
   id: number;
   category_id: number;
   author_id: number;
+  author_name: string;
   title: string;
   description: string;
   created_at: string;
@@ -481,7 +478,8 @@ const mapApiTopicToTopic = (apiTopic: ApiTopicResponse): Topic => ({
   id: apiTopic.id.toString(),
   categoryId: apiTopic.category_id.toString(),
   title: apiTopic.title,
-  author: apiTopic.author_id.toString(), // Упрощение: используем ID автора как строку
+  author: apiTopic.author_id.toString(),
+  authorName: apiTopic.author_name,
   description: apiTopic.description,
   createdAt: apiTopic.created_at,
 });
@@ -497,7 +495,6 @@ interface AddTopicPayload {
 
 // Обновленная функция для добавления темы
 export const addTopic = async (payload: AddTopicPayload): Promise<Topic> => {
-  const token = getToken();
   const numericCategoryId = parseInt(payload.categoryId, 10);
   if (isNaN(numericCategoryId)) {
     throw new Error('Invalid categoryId for addTopic');
@@ -509,12 +506,8 @@ export const addTopic = async (payload: AddTopicPayload): Promise<Topic> => {
     description: payload.description,
   };
 
-  const response = await fetch(`${API_BASE_URL}/topics`, {
+  const response = await fetchWithAuth('/topics', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
-    },
     body: JSON.stringify(apiRequestBody),
   });
 
@@ -530,17 +523,13 @@ export const addTopic = async (payload: AddTopicPayload): Promise<Topic> => {
 // Обновленная функция для удаления темы
 // API DELETE /topics/{id} ожидает только topicId
 export const deleteTopic = async (topicId: string): Promise<void> => {
-  const token = getToken();
   const numericTopicId = parseInt(topicId, 10);
   if (isNaN(numericTopicId)) {
     throw new Error('Invalid topic ID format for deletion.');
   }
 
-  const response = await fetch(`${API_BASE_URL}/topics/${numericTopicId}`, {
+  const response = await fetchWithAuth(`/topics/${numericTopicId}`, {
     method: 'DELETE',
-    headers: {
-      ...(token && { 'Authorization': `Bearer ${token}` }),
-    },
   });
 
   if (!response.ok) {
@@ -548,94 +537,185 @@ export const deleteTopic = async (topicId: string): Promise<void> => {
     console.error("Failed to delete topic:", errorData);
     throw new Error(`Failed to delete topic. Status: ${response.status}. Message: ${errorData}`);
   }
-  // DELETE обычно возвращает 204 No Content
 };
 
 
 interface EditMessagePayload {
-  topicId: string; // Не нужен для API, если id сообщения уникален глобально
+  topicId: string; // Не нужен для API endpoint /messages/{id}, но может быть полезен для консистентности payload
   messageId: string;
   newContent: string;
 }
 
-export const editTopicMessage = async (payload: EditMessagePayload): Promise<TopicMessage> => {
-   // TODO: Заменить на реальный API вызов (PUT /messages/{id})
-   // API ожидает content: string в теле. messageId в пути.
-  console.warn("editTopicMessage is using mock data");
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const messageIndex = mockTopicMessages.findIndex(msg => msg.id === payload.messageId);
-      if (messageIndex === -1) {
-        return reject(new Error("Message not found"));
-      }
-      mockTopicMessages[messageIndex] = {
-        ...mockTopicMessages[messageIndex],
-        content: payload.newContent,
-        // Обычно сервер обновляет и дату редактирования, здесь для простоты не делаем
-      };
-      resolve(mockTopicMessages[messageIndex]);
-    }, 200);
+export const editTopicMessage = async (payload: EditMessagePayload): Promise<void> => {
+  console.log(`API: Editing message ${payload.messageId}`, { newContent: payload.newContent });
+  const numericMessageId = parseInt(payload.messageId, 10);
+
+  if (isNaN(numericMessageId)) {
+    console.error('Invalid message ID format for editTopicMessage:', payload.messageId);
+    throw new Error('Invalid message ID format.');
+  }
+
+  const apiRequestBody: UpdateTopicMessageDto = {
+    content: payload.newContent,
+  };
+
+  const response = await fetchWithAuth(`/messages/${numericMessageId}`, {
+    method: 'PUT',
+    body: JSON.stringify(apiRequestBody),
   });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => 'Failed to read error response');
+    console.error(`API: Failed to edit message ${payload.messageId}. Status: ${response.status}. Body: ${errorText}`);
+    throw new Error(`Failed to edit message. Status: ${response.status}`);
+  }
+
+  if (response.status === 204) {
+    return;
+  }
 };
 
 export const deleteTopicMessage = async (topicId: string, messageId: string): Promise<void> => {
-  // TODO: Заменить на реальный API вызов (DELETE /messages/{id})
-  // API ожидает messageId в пути. topicId не нужен.
-  console.warn("deleteTopicMessage is using mock data");
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // mockTopicMessages = mockTopicMessages.filter(msg => msg.id !== messageId);
-      console.log(`Mock deletion of message ${messageId} from topic ${topicId}`);
-      resolve();
-    }, 200);
+  console.log(`API: Deleting message ${messageId} from topic ${topicId}`);
+  const numericMessageId = parseInt(messageId, 10);
+
+  if (isNaN(numericMessageId)) {
+    console.error('Invalid message ID format for deleteTopicMessage:', messageId);
+    throw new Error('Invalid message ID format.');
+  }
+
+  const response = await fetchWithAuth(`/messages/${numericMessageId}`, {
+    method: 'DELETE',
   });
+
+  if (!response.ok) {
+    if (response.status === 404) {
+        console.warn(`API: Message ${messageId} not found for deletion (404). Assuming already deleted.`);
+        return;
+    }
+    const errorText = await response.text().catch(() => 'Failed to read error response');
+    console.error(`API: Failed to delete message ${messageId}. Status: ${response.status}. Body: ${errorText}`);
+    throw new Error(`Failed to delete message. Status: ${response.status}`);
+  }
+  console.log(`API: Message ${messageId} deleted successfully.`);
 };
 
-// Заглушка для функции получения всех пользователей (для админки)
-// В реальном приложении здесь был бы вызов к /users эндпоинту
-export const fetchAllUsers = async (): Promise<User[]> => {
-  console.warn("fetchAllUsers is using mock data");
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Примерные моковые данные
-      resolve([
-        { id: 'usr1', name: 'adminUser', email: 'admin@example.com', role: 'admin', created_at: new Date().toISOString() },
-        { id: 'usr2', name: 'alice_wonder', email: 'alice@example.com', role: 'user', created_at: new Date().toISOString() },
-        { id: 'usr3', name: 'bob_the_builder', email: 'bob@example.com', role: 'user', created_at: new Date().toISOString() },
-        { id: 'usr4', name: 'charlie_brown', email: 'charlie@example.com', role: 'user', created_at: new Date().toISOString() },
-      ]);
-    }, 500);
+// --- Функция для редактирования топика ---
+interface EditTopicPayload {
+  title: string;
+  description: string;
+}
+
+export const editTopic = async (topicId: string, payload: EditTopicPayload): Promise<void> => {
+  const numericTopicId = parseInt(topicId, 10);
+  if (isNaN(numericTopicId)) {
+    throw new Error('Invalid topic ID format for editTopic');
+  }
+  const apiRequestBody = {
+    title: payload.title,
+    description: payload.description,
+  };
+  const response = await fetchWithAuth(`/topics/${numericTopicId}`, {
+    method: 'PUT',
+    body: JSON.stringify(apiRequestBody),
   });
+  if (!response.ok) {
+    const errorData = await response.text();
+    console.error('Failed to edit topic:', errorData);
+    throw new Error(`Failed to edit topic. Status: ${response.status}. Message: ${errorData}`);
+  }
 };
 
-// Предположим, что у нас есть эндпоинт для обновления роли пользователя
-// PUT /users/{userId}/role  с телом { role: "admin" | "user" }
-export const updateUserRole = async (userId: string, newRole: 'admin' | 'user'): Promise<User> => {
-  console.warn(`updateUserRole is using mock data for userId: ${userId}, newRole: ${newRole}`);
-  // TODO: Заменить на реальный API вызов
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // В реальном приложении мы бы нашли пользователя в мок-данных и обновили его,
-      // но здесь просто вернем "обновленного" пользователя для примера
-      // Это чисто для имитации и не будет обновлять данные в fetchAllUsers
-      const mockUpdatedUser: User = {
-        id: userId,
-        name: `user_${userId}`, // Заглушка, исправлено с username на name
-        email: `${userId}@example.com`, // Заглушка
-        role: newRole,
-        created_at: new Date().toISOString()
-      };
-      resolve(mockUpdatedUser);
-      // Если бы мы хотели обновить мок-данные в fetchAllUsers, нужно было бы найти пользователя
-      // и изменить его роль, но это усложнит моки.
-    }, 300);
-  });
-};
+// --- WebSocket для топика ---
+/**
+ * Подключение к WebSocket для топика
+ * @param topicId string | number
+ * @param handlers { onMessage, onOpen, onClose, onError }
+ * @returns disconnect(): void
+ */
+export function connectToTopicWebSocket(
+  topicId: string | number,
+  handlers: {
+    onMessage: (data: { action: 'created' | 'updated'; message: import('@/types/forum').TopicMessage } | { action: 'deleted'; message_id: string }) => void,
+    onOpen?: () => void,
+    onClose?: (ev: CloseEvent) => void,
+    onError?: (ev: Event) => void,
+  }
+) {
+  const token = localStorage.getItem('accessToken');
+  const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+  const wsHost = window.location.host;
+  const wsUrl = `${wsProtocol}://${wsHost}/ws/topics/${topicId}`;
+  const ws = new WebSocket(wsUrl);
 
-// Имитация API-запроса для создания темы (старая версия, возможно, дубликат)
-// Эта функция createTopic кажется дублирует addTopic, но с другим payload.
-// Оставим addTopic как основную.
-// export const createTopic = async (payload: CreateTopicPayload): Promise<Topic> => { ... }
+  ws.onopen = () => {
+    if (handlers.onOpen) handlers.onOpen();
+  };
+
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    handlers.onMessage(data);
+  };
+
+  ws.onclose = (ev) => {
+    if (handlers.onClose) handlers.onClose(ev);
+  };
+
+  ws.onerror = (ev) => {
+    if (handlers.onError) handlers.onError(ev);
+  };
+
+  return () => {
+    ws.close();
+  };
+}
+
+// --- ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ДАТЫ ИЗ WEBSOCKET ---
+function normalizeIsoDateString(iso: string): string {
+  if (typeof iso !== 'string') return '';
+  return iso.replace(/(\.\d{3})\d*(Z)/, '$1$2');
+}
+
+/**
+ * Подключение к WebSocket для общего чата (topicId=1)
+ * @param handlers { onMessage, onOpen, onClose, onError }
+ * @returns disconnect(): void
+ */
+export function connectToGeneralChatWebSocket(
+  handlers: {
+    onMessage: (data: { action: 'created' | 'updated'; message: import('@/types/forum').ChatMessage } | { action: 'deleted'; message_id: string }) => void,
+    onOpen?: () => void,
+    onClose?: (ev: CloseEvent) => void,
+    onError?: (ev: Event) => void,
+  }
+) {
+  const token = localStorage.getItem('accessToken');
+  const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+  const wsHost = window.location.host;
+  const wsUrl = `${wsProtocol}://${wsHost}/ws/topics/1`;
+  const ws = new WebSocket(wsUrl);
+
+  ws.onopen = () => {
+    if (handlers.onOpen) handlers.onOpen();
+  };
+
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    handlers.onMessage(data);
+  };
+
+  ws.onclose = (ev) => {
+    if (handlers.onClose) handlers.onClose(ev);
+  };
+
+  ws.onerror = (ev) => {
+    if (handlers.onError) handlers.onError(ev);
+  };
+
+  return () => {
+    ws.close();
+  };
+}
 
 // Убедимся, что все экспорты на месте
 // fetchCategories, addCategory, deleteCategory - обновлены
@@ -643,7 +723,6 @@ export const updateUserRole = async (userId: string, newRole: 'admin' | 'user'):
 // addTopic, deleteTopic - пока моки
 // fetchMessagesByTopicId, subscribeToTopicMessages, sendTopicMessage - моки/WS-эмуляция
 // editTopicMessage, deleteTopicMessage - моки
-// fetchAllUsers, updateUserRole - моки
 // fetchGeneralMessages, subscribeToGeneralChatMessages, sendGeneralMessage - моKI/WS-эмуляция
 
 // ... existing code ... 

@@ -1,6 +1,6 @@
 import { createFileRoute, useParams, Link } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { fetchTopicsByCategoryId, deleteTopic as deleteTopicApi } from '@/app/api/forum'
+import { fetchTopicsByCategoryId, deleteTopic as deleteTopicApi, fetchCategoryById } from '@/app/api/forum'
 import type { Topic } from '@/types/forum'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
@@ -34,6 +34,12 @@ function CategoryIndexPage() {
     enabled: !!categoryId,
   })
 
+  const { data: category, isLoading: isLoadingCategory, error: categoryError } = useQuery({
+    queryKey: ['category', categoryId],
+    queryFn: () => fetchCategoryById(categoryId!),
+    enabled: !!categoryId,
+  });
+
   const deleteTopicMutation = useMutation({
     mutationFn: (topicId: string) => deleteTopicApi(topicId),
     onSuccess: () => {
@@ -49,11 +55,12 @@ function CategoryIndexPage() {
     deleteTopicMutation.mutate(topicId);
   };
 
-  if (isLoadingTopics) return <p className="p-4 text-center">Загрузка тем...</p>
+  if (isLoadingTopics || isLoadingCategory) return <p className="p-4 text-center">Загрузка...</p>
   if (topicsError) return <p className="p-4 text-center text-red-500">Ошибка загрузки тем: {topicsError.message}</p>
+  if (categoryError) return <p className="p-4 text-center text-red-500">Ошибка загрузки категории: {categoryError.message}</p>
+  if (!category) return <p className="p-4 text-center text-gray-500">Категория не найдена</p>
 
-  const categoryName = `Категория`;
-
+  const categoryName = category.name;
   return (
     <div className="">
       <div className="flex justify-between items-center mb-6">
@@ -81,7 +88,7 @@ function CategoryIndexPage() {
                   <CardHeader>
                     <CardTitle>{topic.title}</CardTitle>
                     <CardDescription>
-                      Автор: {topic.author} | Создана: {new Date(topic.createdAt).toLocaleDateString()}
+                      Автор: {topic.authorName} | Создана: {new Date(topic.createdAt).toLocaleDateString()}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
