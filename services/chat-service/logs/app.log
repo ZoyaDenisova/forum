@@ -151,3 +151,36 @@
 {"level":"info","time":"2025-05-25T02:11:03.448+0400","caller":"app/app.go:85","msg":"HTTP listening","port":"8081"}
 {"level":"info","time":"2025-05-25T02:14:51.312+0400","caller":"app/app.go:95","msg":"shutdown signal received"}
 {"level":"info","time":"2025-05-25T02:14:51.312+0400","caller":"app/app.go:103","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T14:26:37.739+0400","caller":"app/app.go:29","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T14:26:37.768+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T14:26:37.819+0400","caller":"app/app.go:85","msg":"gRPC connection to auth-service is ready"}
+{"level":"info","time":"2025-05-25T14:26:37.819+0400","caller":"app/app.go:110","msg":"HTTP listening","port":"8081"}
+{"level":"info","time":"2025-05-25T14:27:55.655+0400","caller":"app/app.go:120","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T14:27:55.655+0400","caller":"app/app.go:128","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T14:28:07.614+0400","caller":"app/app.go:29","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T14:28:07.642+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T14:28:07.693+0400","caller":"app/app.go:85","msg":"gRPC connection to auth-service is ready"}
+{"level":"info","time":"2025-05-25T14:28:07.693+0400","caller":"app/app.go:110","msg":"HTTP listening","port":"8081"}
+{"level":"info","time":"2025-05-25T14:28:16.061+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0005005}
+{"level":"info","time":"2025-05-25T14:28:16.079+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0001194}
+{"level":"info","time":"2025-05-25T14:28:16.080+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0005003}
+{"level":"info","time":"2025-05-25T14:28:16.083+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0044883}
+{"level":"info","time":"2025-05-25T14:28:16.152+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T14:28:16.280+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"debug","time":"2025-05-25T14:30:07.988+0400","caller":"usecase/category.go:29","msg":"CategoryUC.ListCategories called"}
+{"level":"info","time":"2025-05-25T14:30:08.188+0400","caller":"usecase/category.go:40","msg":"categories retrieved","count":2}
+{"level":"info","time":"2025-05-25T14:30:08.188+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/categories","status":200,"duration":0.2005874}
+{"level":"debug","time":"2025-05-25T14:30:16.787+0400","caller":"usecase/category.go:65","msg":"CreateCategory called","title":"string"}
+{"level":"warn","time":"2025-05-25T14:30:16.787+0400","caller":"usecase/category.go:73","msg":"unauthorized role tried to create category","role":"user"}
+{"level":"info","time":"2025-05-25T14:30:16.787+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"POST","path":"/categories","status":403,"duration":0.0012163}
+{"level":"debug","time":"2025-05-25T14:30:38.623+0400","caller":"usecase/topis.go:66","msg":"CreateTopic called","title":"str44ing","category_id":1}
+{"level":"info","time":"2025-05-25T14:30:38.628+0400","caller":"usecase/topis.go:91","msg":"topic created","id":7,"category_id":1}
+{"level":"info","time":"2025-05-25T14:30:38.628+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"POST","path":"/topics","status":201,"duration":0.0058004}
+{"level":"debug","time":"2025-05-25T14:31:00.326+0400","caller":"usecase/topis.go:133","msg":"DeleteTopic called","id":7}
+{"level":"info","time":"2025-05-25T14:31:00.341+0400","caller":"usecase/topis.go:160","msg":"topic deleted","id":7}
+{"level":"info","time":"2025-05-25T14:31:00.341+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"DELETE","path":"/topics/:id","status":204,"duration":0.0155452}
+{"level":"debug","time":"2025-05-25T14:31:08.900+0400","caller":"usecase/topis.go:133","msg":"DeleteTopic called","id":6}
+{"level":"warn","time":"2025-05-25T14:31:08.900+0400","caller":"usecase/topis.go:151","msg":"unauthorized user tried to delete topic","topic_id":6,"user_id":13}
+{"level":"info","time":"2025-05-25T14:31:08.900+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"DELETE","path":"/topics/:id","status":403,"duration":0.0007496}
+{"level":"info","time":"2025-05-25T14:38:39.491+0400","caller":"app/app.go:120","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T14:38:39.491+0400","caller":"app/app.go:128","msg":"server stopped gracefully"}

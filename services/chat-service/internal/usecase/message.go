@@ -1,4 +1,3 @@
-// internal/usecase/message_usecase.go
 package usecase
 
 import (

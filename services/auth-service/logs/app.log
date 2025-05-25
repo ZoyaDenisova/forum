@@ -815,3 +815,49 @@
 {"level":"debug","time":"2025-05-25T02:11:18.188+0400","caller":"usecase/user.go:83","msg":"Login called","email":"user@yandex.ru"}
 {"level":"info","time":"2025-05-25T02:11:18.455+0400","caller":"usecase/user.go:115","msg":"user logged in","userID":13}
 {"level":"info","time":"2025-05-25T02:11:18.455+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/login","status":200,"duration":0.2675546}
+{"level":"info","time":"2025-05-25T14:26:37.589+0400","caller":"app/app.go:29","msg":"service starting","name":"auth-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T14:26:37.622+0400","caller":"cron/session_cleanup.go:43","msg":"cron: session cleanup job scheduled","schedule":"0 0 * * *"}
+{"level":"info","time":"2025-05-25T14:26:37.622+0400","caller":"app/app.go:80","msg":"HTTP listening"}
+{"level":"info","time":"2025-05-25T14:26:37.622+0400","caller":"transportgrpc/router.go:25","msg":"gRPC router initialized"}
+{"level":"info","time":"2025-05-25T14:26:37.624+0400","caller":"app/app.go:94","msg":"starting gRPC server"}
+{"level":"info","time":"2025-05-25T14:28:04.510+0400","caller":"app/app.go:29","msg":"service starting","name":"auth-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T14:28:04.539+0400","caller":"cron/session_cleanup.go:43","msg":"cron: session cleanup job scheduled","schedule":"0 0 * * *"}
+{"level":"info","time":"2025-05-25T14:28:04.539+0400","caller":"app/app.go:80","msg":"HTTP listening"}
+{"level":"info","time":"2025-05-25T14:28:04.539+0400","caller":"transportgrpc/router.go:25","msg":"gRPC router initialized"}
+{"level":"info","time":"2025-05-25T14:28:04.540+0400","caller":"app/app.go:94","msg":"starting gRPC server"}
+{"level":"info","time":"2025-05-25T14:28:17.860+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0010003}
+{"level":"info","time":"2025-05-25T14:28:17.877+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T14:28:17.879+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0005021}
+{"level":"info","time":"2025-05-25T14:28:17.879+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T14:28:17.942+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T14:28:18.017+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"debug","time":"2025-05-25T14:28:50.248+0400","caller":"usecase/user.go:83","msg":"Login called","email":"user@yandex.ru"}
+{"level":"warn","time":"2025-05-25T14:28:50.420+0400","caller":"usecase/user.go:92","msg":"invalid credentials: password mismatch","email":"user@yandex.ru"}
+{"level":"info","time":"2025-05-25T14:28:50.420+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/login","status":401,"duration":0.1710869}
+{"level":"debug","time":"2025-05-25T14:29:22.940+0400","caller":"usecase/user.go:83","msg":"Login called","email":"user@yandex.ru"}
+{"level":"info","time":"2025-05-25T14:29:22.999+0400","caller":"usecase/user.go:115","msg":"user logged in","userID":13}
+{"level":"info","time":"2025-05-25T14:29:22.999+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/login","status":200,"duration":0.0588946}
+{"level":"debug","time":"2025-05-25T14:30:16.787+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T14:30:16.787+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header","value":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEzLCJyb2xlIjoidXNlciIsImV4cCI6MTc0ODE2OTg2MiwiaWF0IjoxNzQ4MTY4OTYyfQ.s3PYHlfWW7wECn_fgPioHMVzq-8RmzHlcJ98kr6lm7A"}
+{"level":"debug","time":"2025-05-25T14:30:16.787+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T14:30:16.787+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T14:30:16.787+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":13,"role":"user"}
+{"level":"info","time":"2025-05-25T14:30:16.787+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":13,"role":"user"}
+{"level":"debug","time":"2025-05-25T14:30:38.623+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T14:30:38.623+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header","value":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEzLCJyb2xlIjoidXNlciIsImV4cCI6MTc0ODE2OTg2MiwiaWF0IjoxNzQ4MTY4OTYyfQ.s3PYHlfWW7wECn_fgPioHMVzq-8RmzHlcJ98kr6lm7A"}
+{"level":"debug","time":"2025-05-25T14:30:38.623+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T14:30:38.623+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T14:30:38.623+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":13,"role":"user"}
+{"level":"info","time":"2025-05-25T14:30:38.623+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":13,"role":"user"}
+{"level":"debug","time":"2025-05-25T14:31:00.325+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T14:31:00.325+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header","value":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEzLCJyb2xlIjoidXNlciIsImV4cCI6MTc0ODE2OTg2MiwiaWF0IjoxNzQ4MTY4OTYyfQ.s3PYHlfWW7wECn_fgPioHMVzq-8RmzHlcJ98kr6lm7A"}
+{"level":"debug","time":"2025-05-25T14:31:00.325+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T14:31:00.325+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T14:31:00.325+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":13,"role":"user"}
+{"level":"info","time":"2025-05-25T14:31:00.326+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":13,"role":"user"}
+{"level":"debug","time":"2025-05-25T14:31:08.900+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T14:31:08.900+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header","value":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEzLCJyb2xlIjoidXNlciIsImV4cCI6MTc0ODE2OTg2MiwiaWF0IjoxNzQ4MTY4OTYyfQ.s3PYHlfWW7wECn_fgPioHMVzq-8RmzHlcJ98kr6lm7A"}
+{"level":"debug","time":"2025-05-25T14:31:08.900+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T14:31:08.900+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T14:31:08.900+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":13,"role":"user"}
+{"level":"info","time":"2025-05-25T14:31:08.900+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":13,"role":"user"}

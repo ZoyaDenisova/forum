@@ -34,6 +34,7 @@ func NewRouter(
 ) http.Handler {
 	r := gin.New()
 
+	r.Use(LoggingMiddleware(log))
 	r.Use(gin.Recovery())
 
 	// Swagger UI

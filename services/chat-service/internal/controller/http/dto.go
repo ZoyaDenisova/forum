@@ -21,6 +21,7 @@ type updateMessageRequest struct {
 	Content string `json:"content" binding:"required"`
 }
 
+// добавила имя автора, проверить ошибки
 type messageResponse struct {
 	ID        int64  `json:"id"`
 	TopicID   int64  `json:"topic_id"`
@@ -40,6 +41,7 @@ type updateTopicRequest struct {
 	Description string `json:"description" binding:"required"`
 }
 
+// добавила имя автора, проверить ошибки
 type topicResponse struct {
 	ID          int64     `json:"id"`
 	CategoryID  int64     `json:"category_id"`
