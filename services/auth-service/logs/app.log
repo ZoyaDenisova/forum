@@ -606,3 +606,212 @@
 {"level":"info","time":"2025-05-24T20:09:46.973+0400","caller":"app/app.go:85","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8080 <nil>})"}
 {"level":"info","time":"2025-05-24T20:09:46.973+0400","caller":"grpc/router.go:23","msg":"gRPC router initialized"}
 {"level":"info","time":"2025-05-24T20:09:46.974+0400","caller":"app/app.go:99","msg":"starting gRPC server%!(EXTRA zapcore.Field={addr 15 0 :50051 <nil>})"}
+{"level":"info","time":"2025-05-25T00:05:52.500+0400","caller":"app/app.go:29","msg":"service starting","name":"auth-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T00:05:52.528+0400","caller":"cron/session_cleanup.go:43","msg":"cron: session cleanup job scheduled","schedule":"0 0 * * *"}
+{"level":"info","time":"2025-05-25T00:05:52.528+0400","caller":"app/app.go:80","msg":"HTTP listening"}
+{"level":"info","time":"2025-05-25T00:05:52.528+0400","caller":"transportgrpc/router.go:25","msg":"gRPC router initialized"}
+{"level":"info","time":"2025-05-25T00:05:52.529+0400","caller":"app/app.go:94","msg":"starting gRPC server"}
+{"level":"info","time":"2025-05-25T00:06:38.782+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T00:06:38.857+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T00:06:38.858+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T00:06:38.861+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0037507}
+{"level":"info","time":"2025-05-25T00:06:39.014+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0003275}
+{"level":"debug","time":"2025-05-25T00:07:37.102+0400","caller":"usecase/user.go:47","msg":"Register called","email":"kitten@yandex.ru"}
+{"level":"info","time":"2025-05-25T00:07:37.496+0400","caller":"usecase/user.go:78","msg":"user registered","userID":12}
+{"level":"info","time":"2025-05-25T00:07:37.496+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/register","status":201,"duration":0.3942861}
+{"level":"debug","time":"2025-05-25T00:08:14.683+0400","caller":"usecase/user.go:83","msg":"Login called","email":"kitten@yandex.ru"}
+{"level":"info","time":"2025-05-25T00:08:14.753+0400","caller":"usecase/user.go:115","msg":"user logged in","userID":12}
+{"level":"info","time":"2025-05-25T00:08:14.753+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/login","status":200,"duration":0.0700794}
+{"level":"debug","time":"2025-05-25T00:09:40.421+0400","caller":"usecase/user.go:162","msg":"GetByID called","userID":12}
+{"level":"info","time":"2025-05-25T00:09:40.421+0400","caller":"usecase/user.go:175","msg":"user fetched","userID":12}
+{"level":"info","time":"2025-05-25T00:09:40.421+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":200,"duration":0.0005026}
+{"level":"debug","time":"2025-05-25T00:09:54.835+0400","caller":"usecase/session.go:96","msg":"session.List called","userID":12}
+{"level":"info","time":"2025-05-25T00:09:54.849+0400","caller":"usecase/session.go:106","msg":"active sessions listed","count":1}
+{"level":"info","time":"2025-05-25T00:09:54.849+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/sessions","status":200,"duration":0.0150274}
+{"level":"info","time":"2025-05-25T00:10:55.360+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"PATCH","path":"","status":404,"duration":0}
+{"level":"info","time":"2025-05-25T00:12:13.872+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"PATCH","path":"","status":404,"duration":0}
+{"level":"info","time":"2025-05-25T00:18:13.191+0400","caller":"app/app.go:29","msg":"service starting","name":"auth-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T00:18:13.219+0400","caller":"cron/session_cleanup.go:43","msg":"cron: session cleanup job scheduled","schedule":"0 0 * * *"}
+{"level":"info","time":"2025-05-25T00:18:13.219+0400","caller":"app/app.go:80","msg":"HTTP listening"}
+{"level":"info","time":"2025-05-25T00:18:13.219+0400","caller":"transportgrpc/router.go:25","msg":"gRPC router initialized"}
+{"level":"info","time":"2025-05-25T00:18:13.220+0400","caller":"app/app.go:94","msg":"starting gRPC server"}
+{"level":"info","time":"2025-05-25T00:18:22.785+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0005186}
+{"level":"info","time":"2025-05-25T00:18:22.808+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T00:18:22.809+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0005096}
+{"level":"info","time":"2025-05-25T00:18:22.809+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0005096}
+{"level":"info","time":"2025-05-25T00:18:22.924+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T00:18:22.975+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0000786}
+{"level":"info","time":"2025-05-25T00:18:46.101+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":401,"duration":0}
+{"level":"info","time":"2025-05-25T00:19:04.312+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":401,"duration":0}
+{"level":"debug","time":"2025-05-25T00:19:28.390+0400","caller":"usecase/user.go:83","msg":"Login called","email":"kitten@yandex.ru"}
+{"level":"info","time":"2025-05-25T00:19:28.663+0400","caller":"usecase/user.go:115","msg":"user logged in","userID":12}
+{"level":"info","time":"2025-05-25T00:19:28.663+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/login","status":200,"duration":0.274049}
+{"level":"debug","time":"2025-05-25T00:19:52.600+0400","caller":"usecase/user.go:162","msg":"GetByID called","userID":12}
+{"level":"info","time":"2025-05-25T00:19:52.600+0400","caller":"usecase/user.go:175","msg":"user fetched","userID":12}
+{"level":"info","time":"2025-05-25T00:19:52.601+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":200,"duration":0.0009192}
+{"level":"debug","time":"2025-05-25T00:20:22.103+0400","caller":"usecase/user.go:120","msg":"Update called","userID":12}
+{"level":"info","time":"2025-05-25T00:20:22.170+0400","caller":"usecase/user.go:157","msg":"user updated","userID":12}
+{"level":"info","time":"2025-05-25T00:20:22.170+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"PATCH","path":"/auth/user","status":204,"duration":0.0669399}
+{"level":"debug","time":"2025-05-25T00:21:15.931+0400","caller":"usecase/user.go:162","msg":"GetByID called","userID":12}
+{"level":"info","time":"2025-05-25T00:21:15.931+0400","caller":"usecase/user.go:175","msg":"user fetched","userID":12}
+{"level":"info","time":"2025-05-25T00:21:15.931+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":200,"duration":0.0002942}
+{"level":"debug","time":"2025-05-25T00:22:48.869+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T00:22:48.869+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"error","time":"2025-05-25T00:22:48.869+0400","caller":"transportgrpc/interceptor.go:61","msg":"token validation failed: %v"}
+{"level":"debug","time":"2025-05-25T00:24:48.277+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T00:24:48.277+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"error","time":"2025-05-25T00:24:48.277+0400","caller":"transportgrpc/interceptor.go:61","msg":"token validation failed: %v"}
+{"level":"debug","time":"2025-05-25T00:26:22.482+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T00:26:22.482+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"error","time":"2025-05-25T00:26:22.482+0400","caller":"transportgrpc/interceptor.go:61","msg":"token validation failed: %v"}
+{"level":"debug","time":"2025-05-25T00:32:00.862+0400","caller":"usecase/user.go:162","msg":"GetByID called","userID":12}
+{"level":"info","time":"2025-05-25T00:32:00.862+0400","caller":"usecase/user.go:175","msg":"user fetched","userID":12}
+{"level":"info","time":"2025-05-25T00:32:00.862+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":200,"duration":0.0005263}
+{"level":"debug","time":"2025-05-25T00:33:30.006+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T00:33:30.006+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"error","time":"2025-05-25T00:33:30.006+0400","caller":"transportgrpc/interceptor.go:61","msg":"token validation failed: %v"}
+{"level":"debug","time":"2025-05-25T00:47:03.648+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T00:47:03.648+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"error","time":"2025-05-25T00:47:03.648+0400","caller":"transportgrpc/interceptor.go:61","msg":"token validation failed: %v"}
+{"level":"debug","time":"2025-05-25T00:47:16.029+0400","caller":"usecase/user.go:83","msg":"Login called","email":"kitten@yandex.ru"}
+{"level":"info","time":"2025-05-25T00:47:16.097+0400","caller":"usecase/user.go:115","msg":"user logged in","userID":12}
+{"level":"info","time":"2025-05-25T00:47:16.097+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/login","status":200,"duration":0.0675587}
+{"level":"debug","time":"2025-05-25T00:47:46.723+0400","caller":"usecase/user.go:162","msg":"GetByID called","userID":12}
+{"level":"info","time":"2025-05-25T00:47:46.723+0400","caller":"usecase/user.go:175","msg":"user fetched","userID":12}
+{"level":"info","time":"2025-05-25T00:47:46.723+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":200,"duration":0.0004984}
+{"level":"debug","time":"2025-05-25T00:48:10.723+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T00:48:10.723+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T00:48:10.723+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T00:48:10.723+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T00:48:10.723+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"user"}
+{"level":"info","time":"2025-05-25T00:48:10.723+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"user"}
+{"level":"debug","time":"2025-05-25T00:57:10.913+0400","caller":"usecase/user.go:162","msg":"GetByID called","userID":12}
+{"level":"info","time":"2025-05-25T00:57:10.913+0400","caller":"usecase/user.go:175","msg":"user fetched","userID":12}
+{"level":"info","time":"2025-05-25T00:57:10.913+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":200,"duration":0.0005002}
+{"level":"debug","time":"2025-05-25T00:57:18.412+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T00:57:18.412+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T00:57:18.412+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T00:57:18.412+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T00:57:18.412+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"user"}
+{"level":"info","time":"2025-05-25T00:57:18.412+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"user"}
+{"level":"debug","time":"2025-05-25T00:58:15.437+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T00:58:15.437+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T00:58:15.437+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T00:58:15.437+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T00:58:15.437+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"user"}
+{"level":"info","time":"2025-05-25T00:58:15.437+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"user"}
+{"level":"debug","time":"2025-05-25T00:59:06.927+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T00:59:06.927+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T00:59:06.927+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T00:59:06.927+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T00:59:06.927+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"user"}
+{"level":"info","time":"2025-05-25T00:59:06.927+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"user"}
+{"level":"debug","time":"2025-05-25T00:59:46.737+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T00:59:46.737+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T00:59:46.737+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T00:59:46.737+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T00:59:46.737+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"user"}
+{"level":"info","time":"2025-05-25T00:59:46.737+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"user"}
+{"level":"debug","time":"2025-05-25T01:00:11.885+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T01:00:11.885+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T01:00:11.885+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T01:00:11.885+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T01:00:11.885+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"user"}
+{"level":"info","time":"2025-05-25T01:00:11.885+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"user"}
+{"level":"debug","time":"2025-05-25T01:00:53.533+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T01:00:53.533+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T01:00:53.533+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T01:00:53.533+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T01:00:53.533+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"user"}
+{"level":"info","time":"2025-05-25T01:00:53.533+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"user"}
+{"level":"debug","time":"2025-05-25T01:01:31.968+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T01:01:31.968+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T01:01:31.968+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T01:01:31.968+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T01:01:31.968+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"user"}
+{"level":"info","time":"2025-05-25T01:01:31.968+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"user"}
+{"level":"debug","time":"2025-05-25T01:02:00.240+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T01:02:00.240+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T01:02:00.240+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T01:02:00.240+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T01:02:00.240+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"user"}
+{"level":"info","time":"2025-05-25T01:02:00.240+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"user"}
+{"level":"info","time":"2025-05-25T01:02:34.914+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T01:02:34.932+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":304,"duration":0}
+{"level":"info","time":"2025-05-25T01:02:34.932+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":304,"duration":0}
+{"level":"info","time":"2025-05-25T01:02:34.933+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":304,"duration":0.0010183}
+{"level":"info","time":"2025-05-25T01:02:35.032+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T01:02:35.080+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":304,"duration":0}
+{"level":"info","time":"2025-05-25T01:02:47.476+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":401,"duration":0}
+{"level":"debug","time":"2025-05-25T01:03:19.870+0400","caller":"usecase/user.go:83","msg":"Login called","email":"kitten@yandex.ru"}
+{"level":"info","time":"2025-05-25T01:03:19.936+0400","caller":"usecase/user.go:115","msg":"user logged in","userID":12}
+{"level":"info","time":"2025-05-25T01:03:19.936+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/login","status":200,"duration":0.0660071}
+{"level":"debug","time":"2025-05-25T01:03:45.205+0400","caller":"usecase/user.go:162","msg":"GetByID called","userID":12}
+{"level":"info","time":"2025-05-25T01:03:45.206+0400","caller":"usecase/user.go:175","msg":"user fetched","userID":12}
+{"level":"info","time":"2025-05-25T01:03:45.206+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":200,"duration":0.0005689}
+{"level":"debug","time":"2025-05-25T01:04:08.440+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T01:04:08.440+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T01:04:08.440+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"admin"}
+{"level":"info","time":"2025-05-25T01:04:08.440+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T01:04:08.440+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"admin"}
+{"level":"info","time":"2025-05-25T01:04:08.440+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"admin"}
+{"level":"debug","time":"2025-05-25T01:04:30.813+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T01:04:30.813+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T01:04:30.813+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"admin"}
+{"level":"info","time":"2025-05-25T01:04:30.813+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T01:04:30.813+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"admin"}
+{"level":"info","time":"2025-05-25T01:04:30.813+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"admin"}
+{"level":"debug","time":"2025-05-25T01:04:40.415+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T01:04:40.415+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T01:04:40.415+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"admin"}
+{"level":"info","time":"2025-05-25T01:04:40.415+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T01:04:40.415+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"admin"}
+{"level":"info","time":"2025-05-25T01:04:40.415+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"admin"}
+{"level":"debug","time":"2025-05-25T01:05:42.373+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T01:05:42.373+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T01:05:42.373+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"admin"}
+{"level":"info","time":"2025-05-25T01:05:42.373+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T01:05:42.373+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"admin"}
+{"level":"info","time":"2025-05-25T01:05:42.373+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"admin"}
+{"level":"debug","time":"2025-05-25T01:06:58.885+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T01:06:58.885+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T01:06:58.886+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"admin"}
+{"level":"info","time":"2025-05-25T01:06:58.886+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T01:06:58.886+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":12,"role":"admin"}
+{"level":"info","time":"2025-05-25T01:06:58.886+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":12,"role":"admin"}
+{"level":"debug","time":"2025-05-25T01:08:41.304+0400","caller":"usecase/user.go:162","msg":"GetByID called","userID":12}
+{"level":"info","time":"2025-05-25T01:08:41.304+0400","caller":"usecase/user.go:175","msg":"user fetched","userID":12}
+{"level":"info","time":"2025-05-25T01:08:41.304+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":200,"duration":0.0006224}
+{"level":"info","time":"2025-05-25T01:16:30.414+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T01:16:30.433+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":304,"duration":0}
+{"level":"info","time":"2025-05-25T01:16:30.433+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":304,"duration":0}
+{"level":"info","time":"2025-05-25T01:16:30.434+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":304,"duration":0}
+{"level":"info","time":"2025-05-25T01:16:30.530+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T01:16:30.533+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":304,"duration":0.0001056}
+{"level":"debug","time":"2025-05-25T01:16:40.689+0400","caller":"usecase/user.go:162","msg":"GetByID called","userID":12}
+{"level":"info","time":"2025-05-25T01:16:40.689+0400","caller":"usecase/user.go:175","msg":"user fetched","userID":12}
+{"level":"info","time":"2025-05-25T01:16:40.689+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":200,"duration":0.0001343}
+{"level":"debug","time":"2025-05-25T01:28:08.020+0400","caller":"usecase/user.go:47","msg":"Register called","email":"user@yandex.ru"}
+{"level":"info","time":"2025-05-25T01:28:08.169+0400","caller":"usecase/user.go:78","msg":"user registered","userID":13}
+{"level":"info","time":"2025-05-25T01:28:08.170+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/register","status":201,"duration":0.1498399}
+{"level":"debug","time":"2025-05-25T01:28:39.605+0400","caller":"usecase/user.go:83","msg":"Login called","email":"user@yandex.ru"}
+{"level":"info","time":"2025-05-25T01:28:39.672+0400","caller":"usecase/user.go:115","msg":"user logged in","userID":13}
+{"level":"info","time":"2025-05-25T01:28:39.672+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/login","status":200,"duration":0.0670712}
+{"level":"debug","time":"2025-05-25T01:29:12.994+0400","caller":"usecase/user.go:162","msg":"GetByID called","userID":13}
+{"level":"info","time":"2025-05-25T01:29:12.994+0400","caller":"usecase/user.go:175","msg":"user fetched","userID":13}
+{"level":"info","time":"2025-05-25T01:29:12.994+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":200,"duration":0.0005004}
+{"level":"debug","time":"2025-05-25T01:29:28.698+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T01:29:28.698+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T01:29:28.698+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T01:29:28.698+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T01:29:28.698+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":13,"role":"user"}
+{"level":"info","time":"2025-05-25T01:29:28.698+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":13,"role":"user"}
+{"level":"debug","time":"2025-05-25T01:33:24.147+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T01:33:24.147+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header: %s"}
+{"level":"debug","time":"2025-05-25T01:33:24.147+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T01:33:24.147+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T01:33:24.147+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":13,"role":"user"}
+{"level":"info","time":"2025-05-25T01:33:24.147+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":13,"role":"user"}
+{"level":"debug","time":"2025-05-25T02:11:18.188+0400","caller":"usecase/user.go:83","msg":"Login called","email":"user@yandex.ru"}
+{"level":"info","time":"2025-05-25T02:11:18.455+0400","caller":"usecase/user.go:115","msg":"user logged in","userID":13}
+{"level":"info","time":"2025-05-25T02:11:18.455+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/login","status":200,"duration":0.2675546}

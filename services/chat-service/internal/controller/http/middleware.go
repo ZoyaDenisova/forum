@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"fmt"
+	"github.com/ZoyaDenisova/go-common/contextkeys"
 	"google.golang.org/grpc/metadata"
 	"net/http"
 	"strings"
@@ -11,14 +12,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type (
-	ctxUserIDKey struct{}
-	ctxRoleKey   struct{}
-)
-
 func UserIDFromCtx(ctx context.Context) (int64, string) {
-	uid, _ := ctx.Value(ctxUserIDKey{}).(int64)
-	role, _ := ctx.Value(ctxRoleKey{}).(string)
+	uid, _ := ctx.Value(contextkeys.UserIDKey{}).(int64)
+	role, _ := ctx.Value(contextkeys.RoleKey{}).(string)
 	return uid, role
 }
 
@@ -37,6 +33,8 @@ func AuthMiddleware(authClient authpb.AuthServiceClient) gin.HandlerFunc {
 		})
 		ctx := metadata.NewOutgoingContext(c.Request.Context(), md)
 
+		fmt.Printf("outgoing jwt: value=%s\n", token) //убрать
+
 		resp, err := authClient.VerifyToken(ctx, &authpb.VerifyTokenRequest{
 			AccessToken: token,
 		})
@@ -46,8 +44,8 @@ func AuthMiddleware(authClient authpb.AuthServiceClient) gin.HandlerFunc {
 			return
 		}
 
-		ctx = context.WithValue(c.Request.Context(), ctxUserIDKey{}, resp.UserId)
-		ctx = context.WithValue(ctx, ctxRoleKey{}, resp.Role)
+		ctx = context.WithValue(c.Request.Context(), contextkeys.UserIDKey{}, resp.UserId)
+		ctx = context.WithValue(ctx, contextkeys.RoleKey{}, resp.Role)
 		c.Request = c.Request.WithContext(ctx)
 
 		c.Next()

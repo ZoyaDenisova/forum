@@ -2,8 +2,8 @@ package app
 
 import (
 	"auth-service/config"
-	"auth-service/internal/controller/grpc"
 	httpd "auth-service/internal/controller/http"
+	"auth-service/internal/controller/transportgrpc"
 	"auth-service/internal/cron"
 	"auth-service/internal/repo"
 	"auth-service/internal/usecase"
@@ -13,7 +13,6 @@ import (
 	"github.com/ZoyaDenisova/go-common/jwt"
 	"github.com/ZoyaDenisova/go-common/logger"
 	"github.com/ZoyaDenisova/go-common/postgres"
-	cronlib "github.com/robfig/cron/v3"
 	"go.uber.org/zap"
 	"net"
 	"net/http"
@@ -23,12 +22,13 @@ import (
 	"time"
 )
 
+// todo в юскейсах добавить логирование
 func Run(cfg *config.Config) {
 	// Logger
 	l := logger.New(cfg.Log.Level)
 	l.Info("service starting",
-		zap.String("name", cfg.App.Name),
-		zap.String("version", cfg.App.Version),
+		"name", cfg.App.Name,
+		"version", cfg.App.Version,
 	)
 
 	// Postgres
@@ -37,7 +37,7 @@ func Run(cfg *config.Config) {
 		postgres.MaxPoolSize(cfg.PG.PoolMax),
 	)
 	if err != nil {
-		l.Fatal("failed to init postgres", zap.Error(err))
+		l.Fatal("failed to init postgres", "err", err)
 	}
 	defer pg.Close()
 
@@ -54,21 +54,16 @@ func Run(cfg *config.Config) {
 	)
 
 	// Use-cases
-	userUC := usecase.NewUserUsecase(userRepo, sessRepo, hasherSvc, tokens)
-	sessUC := usecase.NewSessionUsecase(sessRepo, userRepo, tokens)
+	userUC := usecase.NewUserUsecase(userRepo, sessRepo, hasherSvc, tokens, l)
+	sessUC := usecase.NewSessionUsecase(sessRepo, userRepo, tokens, l)
 
 	// Router
 	router := httpd.NewRouter(l, userUC, sessUC, tokens, cfg)
 
 	// Cron
-	scheduler := cronlib.New()
-	if err := cron.RegisterSessionCleanup(
-		scheduler,
-		cfg.SessionCleanupCron.Schedule,
-		sessUC,
-		l,
-	); err != nil {
-		l.Fatal("failed to register cron task:", err)
+	cron := cron.NewSessionCleanupCron(l, sessUC)
+	if err := cron.Start(cfg.SessionCleanupCron.Schedule); err != nil {
+		l.Fatal("cron startup failed", "err", err)
 	}
 
 	// HTTP Server
@@ -88,7 +83,7 @@ func Run(cfg *config.Config) {
 		}
 	}()
 
-	grpcSrv := grpc.NewRouter(l, tokens)
+	grpcSrv := transportgrpc.NewRouter(l, tokens)
 
 	addr := ":" + cfg.GRPC.Port // фикс
 

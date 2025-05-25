@@ -79,18 +79,13 @@ const docTemplate = `{
                 "security": [
                     {
                         "BearerAuth": []
-                    },
-                    {
-                        "BearerAuth": []
                     }
                 ],
                 "description": "Return profile of authenticated user",
                 "produces": [
-                    "application/json",
                     "application/json"
                 ],
                 "tags": [
-                    "Auth",
                     "Auth"
                 ],
                 "summary": "Get current user",
@@ -217,6 +212,11 @@ const docTemplate = `{
         },
         "/auth/session": {
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Log out current session by revoking refreshToken from cookie",
                 "produces": [
                     "application/json"
@@ -227,13 +227,16 @@ const docTemplate = `{
                 "summary": "Revoke current session",
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/http.ErrorResponse"
                         }
@@ -249,6 +252,11 @@ const docTemplate = `{
         },
         "/auth/sessions": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns all active sessions for the user",
                 "produces": [
                     "application/json"
@@ -267,6 +275,12 @@ const docTemplate = `{
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/http.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -276,6 +290,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Log out all sessions for the current user",
                 "produces": [
                     "application/json"
@@ -286,9 +305,12 @@ const docTemplate = `{
                 "summary": "Revoke all sessions",
                 "responses": {
                     "204": {
-                        "description": "No Content",
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/http.ErrorResponse"
                         }
                     },
                     "500": {
@@ -331,10 +353,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",

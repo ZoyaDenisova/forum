@@ -1,4 +1,4 @@
-package grpc
+package transportgrpc
 
 import (
 	authpb "auth-service/cmd/app/docs/proto"
@@ -10,13 +10,15 @@ import (
 
 func NewRouter(log logger.Interface, tm jwt.TokenManager) *grpc.Server {
 	// UnaryInterceptor для аутентификации (из interceptor.go)
+	authInterceptor := NewAuthInterceptor(tm, log)
+
 	opts := []grpc.ServerOption{
-		grpc.UnaryInterceptor(AuthInterceptor(tm)),
+		grpc.UnaryInterceptor(authInterceptor.Unary()),
 	}
 
 	srv := grpc.NewServer(opts...)
 
-	authpb.RegisterAuthServiceServer(srv, NewAuthServer())
+	authpb.RegisterAuthServiceServer(srv, NewAuthServer(log))
 
 	reflection.Register(srv)
 

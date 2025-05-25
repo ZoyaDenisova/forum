@@ -140,6 +140,14 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/http.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -149,35 +157,6 @@ paths:
       summary: Create new category
       tags:
       - Category
-  /categories/{categoryId}/topics:
-    get:
-      description: Returns all topics under a given category
-      parameters:
-      - description: Category ID
-        in: path
-        name: categoryId
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/http.topicResponse'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/http.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/http.ErrorResponse'
-      summary: List topics in category
-      tags:
-      - Topic
   /categories/{id}:
     delete:
       description: Removes a category
@@ -190,10 +169,16 @@ paths:
       responses:
         "204":
           description: No Content
-          schema:
-            type: string
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "403":
+          description: Forbidden
           schema:
             $ref: '#/definitions/http.ErrorResponse'
         "404":
@@ -258,10 +243,16 @@ paths:
       responses:
         "204":
           description: No Content
-          schema:
-            type: string
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "403":
+          description: Forbidden
           schema:
             $ref: '#/definitions/http.ErrorResponse'
         "404":
@@ -277,6 +268,35 @@ paths:
       summary: Update category
       tags:
       - Category
+  /categories/{id}/topics:
+    get:
+      description: Returns all topics under a given category
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/http.topicResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+      summary: List topics in category
+      tags:
+      - Topic
   /messages/{id}:
     delete:
       description: Removes a message
@@ -289,10 +309,16 @@ paths:
       responses:
         "204":
           description: No Content
-          schema:
-            type: string
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "403":
+          description: Forbidden
           schema:
             $ref: '#/definitions/http.ErrorResponse'
         "404":
@@ -329,10 +355,16 @@ paths:
       responses:
         "204":
           description: No Content
-          schema:
-            type: string
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "403":
+          description: Forbidden
           schema:
             $ref: '#/definitions/http.ErrorResponse'
         "404":
@@ -371,6 +403,14 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/http.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -392,10 +432,16 @@ paths:
       responses:
         "204":
           description: No Content
-          schema:
-            type: string
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "403":
+          description: Forbidden
           schema:
             $ref: '#/definitions/http.ErrorResponse'
         "404":
@@ -470,6 +516,14 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/http.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
         "404":
           description: Not Found
           schema:
@@ -483,13 +537,13 @@ paths:
       summary: Update topic
       tags:
       - Topic
-  /topics/{topicId}/messages:
+  /topics/{id}/messages:
     get:
       description: Returns all messages in a topic
       parameters:
       - description: Topic ID
         in: path
-        name: topicId
+        name: id
         required: true
         type: integer
       produces:
@@ -519,7 +573,7 @@ paths:
       parameters:
       - description: Topic ID
         in: path
-        name: topicId
+        name: id
         required: true
         type: integer
       - description: Message text
@@ -548,13 +602,13 @@ paths:
       summary: Send message
       tags:
       - Message
-  /ws/topics/{topicId}:
+  /ws/topics/{id}:
     get:
       description: Subscribes to live messages in a topic
       parameters:
       - description: Topic ID
         in: path
-        name: topicId
+        name: id
         required: true
         type: integer
       responses:

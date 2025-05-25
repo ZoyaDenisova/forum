@@ -7,7 +7,7 @@ import (
 	"chat-service/internal/entity"
 )
 
-type CategoryUsecaseContract interface {
+type CategoryUsecase interface {
 	ListCategories(ctx context.Context) ([]*entity.Category, error)
 	GetCategory(ctx context.Context, id int64) (*entity.Category, error)
 	CreateCategory(ctx context.Context, p CreateCategoryParams) (int64, error)
@@ -15,7 +15,7 @@ type CategoryUsecaseContract interface {
 	DeleteCategory(ctx context.Context, id int64) error
 }
 
-type TopicUsecaseContract interface {
+type TopicUsecase interface {
 	ListTopics(ctx context.Context, categoryID int64) ([]*entity.Topic, error)
 	GetTopic(ctx context.Context, id int64) (*entity.Topic, error)
 	CreateTopic(ctx context.Context, p TopicParams) (int64, error)
@@ -23,7 +23,7 @@ type TopicUsecaseContract interface {
 	DeleteTopic(ctx context.Context, id int64) error
 }
 
-type MessageUsecaseContract interface {
+type MessageUsecase interface {
 	SendMessage(ctx context.Context, p SendMessageParams) error
 	UpdateMessage(ctx context.Context, id int64, newContent string) error
 	DeleteMessage(ctx context.Context, id int64) error

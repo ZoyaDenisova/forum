@@ -121,7 +121,6 @@ paths:
       description: Return profile of authenticated user
       produces:
       - application/json
-      - application/json
       responses:
         "200":
           description: OK
@@ -141,10 +140,8 @@ paths:
             $ref: '#/definitions/http.ErrorResponse'
       security:
       - BearerAuth: []
-      - BearerAuth: []
       summary: Get current user
       tags:
-      - Auth
       - Auth
   /auth/refresh:
     post:
@@ -216,16 +213,20 @@ paths:
       responses:
         "204":
           description: No Content
-          schema:
-            type: string
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/http.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/http.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Revoke current session
       tags:
       - Auth
@@ -237,12 +238,16 @@ paths:
       responses:
         "204":
           description: No Content
+        "401":
+          description: Unauthorized
           schema:
-            type: string
+            $ref: '#/definitions/http.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/http.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Revoke all sessions
       tags:
       - Auth
@@ -257,10 +262,16 @@ paths:
             items:
               $ref: '#/definitions/http.SessionResponse'
             type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/http.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: List user sessions
       tags:
       - Auth
@@ -282,8 +293,6 @@ paths:
       responses:
         "204":
           description: No Content
-          schema:
-            type: string
         "400":
           description: Bad Request
           schema:

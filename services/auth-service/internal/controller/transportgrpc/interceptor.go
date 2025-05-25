@@ -1,8 +1,9 @@
-package grpc
+package transportgrpc
 
 import (
 	"context"
-	"fmt"
+	"github.com/ZoyaDenisova/go-common/contextkeys"
+	"github.com/ZoyaDenisova/go-common/logger"
 	"strings"
 
 	"github.com/ZoyaDenisova/go-common/jwt"
@@ -12,13 +13,20 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type (
-	ctxUserIDKey struct{}
-	ctxRoleKey   struct{}
-)
+type AuthInterceptor struct {
+	tokens jwt.TokenManager
+	logger logger.Interface
+}
+
+func NewAuthInterceptor(tokens jwt.TokenManager, log logger.Interface) *AuthInterceptor {
+	return &AuthInterceptor{
+		tokens: tokens,
+		logger: log,
+	}
+}
 
 // AuthInterceptor валидирует Bearer-токен из metadata и кладёт userID/role в контекст
-func AuthInterceptor(tokens jwt.TokenManager) grpc.UnaryServerInterceptor {
+func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 	return func(
 		ctx context.Context,
 		req interface{},
@@ -26,42 +34,48 @@ func AuthInterceptor(tokens jwt.TokenManager) grpc.UnaryServerInterceptor {
 		handler grpc.UnaryHandler,
 	) (interface{}, error) {
 		md, ok := metadata.FromIncomingContext(ctx)
-		fmt.Println(md) // map[:authority:[localhost:50051] content-type:[application/grpc] user-agent:[grpc-go/1.72.1]]
-
 		if !ok {
+			i.logger.Warn("missing metadata in context")
 			return nil, status.Errorf(codes.Unauthenticated, "missing metadata")
 		}
-		vals := md["authorization"]
-		fmt.Println("vals", vals) // vals []
 
-		// err
+		i.logger.Debug("incoming metadata: %+v", md)
+
+		vals := md["authorization"]
 		if len(vals) == 0 {
+			i.logger.Warn("authorization header is missing")
 			return nil, status.Errorf(codes.Unauthenticated, "authorization header is required")
 		}
+
 		auth := vals[0]
-		fmt.Println("auth", auth) //
+		i.logger.Debug("authorization header", "value", auth)
+
 		if !strings.HasPrefix(auth, "Bearer ") {
+			i.logger.Warn("invalid auth header format: %s", auth)
 			return nil, status.Errorf(codes.Unauthenticated, "invalid auth header")
 		}
+
 		token := strings.TrimPrefix(auth, "Bearer ")
-		userID, role, err := tokens.ValidateAccess(token)
-		fmt.Println("u", userID, role, err)
+		userID, role, err := i.tokens.ValidateAccess(token)
 		if err != nil {
+			i.logger.Error("token validation failed: %v", err)
 			return nil, status.Errorf(codes.Unauthenticated, "invalid token: %v", err)
 		}
 
-		newCtx := context.WithValue(ctx, ctxUserIDKey{}, userID)
-		newCtx = context.WithValue(newCtx, ctxRoleKey{}, role)
+		i.logger.Debug("token validated: userID=%s role=%s", userID, role)
+
+		newCtx := context.WithValue(ctx, contextkeys.UserIDKey{}, userID)
+		newCtx = context.WithValue(newCtx, contextkeys.RoleKey{}, role)
 
 		return handler(newCtx, req)
 	}
 }
 
 func FromContext(ctx context.Context) (userID int64, role string) {
-	if v, ok := ctx.Value(ctxUserIDKey{}).(int64); ok {
+	if v, ok := ctx.Value(contextkeys.UserIDKey{}).(int64); ok {
 		userID = v
 	}
-	if r, ok := ctx.Value(ctxRoleKey{}).(string); ok {
+	if r, ok := ctx.Value(contextkeys.RoleKey{}).(string); ok {
 		role = r
 	}
 	return

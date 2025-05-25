@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -16,27 +17,29 @@ func NewMessageHandler(uc usecase.MessageUsecase) *MessageHandler {
 	return &MessageHandler{uc: uc}
 }
 
-// GetMessages — GET /topics/{topicId}/messages
+// GetMessages — GET /topics/{id}/messages
 // @Summary      List messages
 // @Description  Returns all messages in a topic
 // @Tags         Message
 // @Produce      json
-// @Param        topicId  path      int  true  "Topic ID"
+// @Param        id  path      int  true  "Topic ID"
 // @Success      200      {array}   messageResponse
 // @Failure      400      {object}  ErrorResponse
 // @Failure      500      {object}  ErrorResponse
-// @Router       /topics/{topicId}/messages [get]
+// @Router       /topics/{id}/messages [get]
 func (h *MessageHandler) GetMessages(c *gin.Context) {
 	tid, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: "invalid topic id"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Message: "invalid topic id"})
 		return
 	}
+
 	list, err := h.uc.GetMessages(c.Request.Context(), tid)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
 		return
 	}
+
 	resp := make([]messageResponse, 0, len(list))
 	for _, m := range list {
 		resp = append(resp, messageResponse{
@@ -47,44 +50,55 @@ func (h *MessageHandler) GetMessages(c *gin.Context) {
 			CreatedAt: m.CreatedAt.Unix(),
 		})
 	}
+
 	c.JSON(http.StatusOK, resp)
 }
 
-// SendMessage — POST /topics/{topicId}/messages
+// SendMessage — POST /topics/{id}/messages
 // @Summary      Send message
 // @Description  Creates a new message in topic
 // @Tags         Message
 // @Accept       json
 // @Produce      json
-// @Param        topicId  path      int                true  "Topic ID"
+// @Param        id       path      int                 true  "Topic ID"
 // @Param        request  body      sendMessageRequest  true  "Message text"
 // @Success      201      {object}  messageResponse
 // @Failure      400      {object}  ErrorResponse
 // @Failure      500      {object}  ErrorResponse
 // @Security     BearerAuth
-// @Router       /topics/{topicId}/messages [post]
+// @Router       /topics/{id}/messages [post]
 func (h *MessageHandler) SendMessage(c *gin.Context) {
 	tid, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: "invalid topic id"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Message: "invalid topic id"})
 		return
 	}
+
 	var req sendMessageRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
 		return
 	}
+
 	authorID, _ := UserIDFromCtx(c.Request.Context())
+
 	err = h.uc.SendMessage(c.Request.Context(), usecase.SendMessageParams{
 		TopicID:  tid,
 		AuthorID: authorID,
 		Content:  req.Content,
 	})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+		switch {
+		case errors.Is(err, usecase.ErrUnauthenticated):
+			c.AbortWithStatusJSON(http.StatusUnauthorized, ErrorResponse{Message: "unauthenticated"})
+		case errors.Is(err, usecase.ErrForbidden):
+			c.AbortWithStatusJSON(http.StatusForbidden, ErrorResponse{Message: "forbidden: insufficient privileges"})
+		default:
+			c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Message: "internal server error"})
+		}
 		return
 	}
-	// возвращаем тот же объект
+
 	c.JSON(http.StatusCreated, messageResponse{
 		TopicID:   tid,
 		AuthorID:  authorID,
@@ -101,8 +115,10 @@ func (h *MessageHandler) SendMessage(c *gin.Context) {
 // @Produce      json
 // @Param        id       path      int                    true  "Message ID"
 // @Param        request  body      updateMessageRequest  true  "New content"
-// @Success      204      {string}  string                 "No Content"
+// @Success      204
 // @Failure      400      {object}  ErrorResponse
+// @Failure      401      {object}  ErrorResponse  "Unauthorized"
+// @Failure      403      {object}  ErrorResponse  "Forbidden"
 // @Failure      404      {object}  ErrorResponse
 // @Failure      500      {object}  ErrorResponse
 // @Security     BearerAuth
@@ -110,23 +126,31 @@ func (h *MessageHandler) SendMessage(c *gin.Context) {
 func (h *MessageHandler) UpdateMessage(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: "invalid message id"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Message: "invalid message id"})
 		return
 	}
+
 	var req updateMessageRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
 		return
 	}
-	if err := h.uc.UpdateMessage(c.Request.Context(), id, req.Content); err != nil {
+
+	err = h.uc.UpdateMessage(c.Request.Context(), id, req.Content)
+	if err != nil {
 		switch err {
+		case usecase.ErrUnauthenticated:
+			c.AbortWithStatusJSON(http.StatusUnauthorized, ErrorResponse{Message: "unauthenticated"})
+		case usecase.ErrForbidden:
+			c.AbortWithStatusJSON(http.StatusForbidden, ErrorResponse{Message: "forbidden"})
 		case usecase.ErrMessageNotFound:
-			c.JSON(http.StatusNotFound, ErrorResponse{Message: err.Error()})
+			c.AbortWithStatusJSON(http.StatusNotFound, ErrorResponse{Message: "message not found"})
 		default:
-			c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+			c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Message: "internal server error"})
 		}
 		return
 	}
+
 	c.Status(http.StatusNoContent)
 }
 
@@ -135,8 +159,10 @@ func (h *MessageHandler) UpdateMessage(c *gin.Context) {
 // @Description  Removes a message
 // @Tags         Message
 // @Param        id   path      int  true  "Message ID"
-// @Success      204  {string}  string  "No Content"
+// @Success      204
 // @Failure      400  {object}  ErrorResponse
+// @Failure      401  {object}  ErrorResponse  "Unauthorized"
+// @Failure      403  {object}  ErrorResponse  "Forbidden"
 // @Failure      404  {object}  ErrorResponse
 // @Failure      500  {object}  ErrorResponse
 // @Security     BearerAuth
@@ -144,17 +170,24 @@ func (h *MessageHandler) UpdateMessage(c *gin.Context) {
 func (h *MessageHandler) DeleteMessage(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: "invalid message id"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Message: "invalid message id"})
 		return
 	}
-	if err := h.uc.DeleteMessage(c.Request.Context(), id); err != nil {
+
+	err = h.uc.DeleteMessage(c.Request.Context(), id)
+	if err != nil {
 		switch err {
+		case usecase.ErrUnauthenticated:
+			c.AbortWithStatusJSON(http.StatusUnauthorized, ErrorResponse{Message: "unauthenticated"})
+		case usecase.ErrForbidden:
+			c.AbortWithStatusJSON(http.StatusForbidden, ErrorResponse{Message: "forbidden"})
 		case usecase.ErrMessageNotFound:
-			c.JSON(http.StatusNotFound, ErrorResponse{Message: err.Error()})
+			c.AbortWithStatusJSON(http.StatusNotFound, ErrorResponse{Message: "message not found"})
 		default:
-			c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+			c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Message: "internal server error"})
 		}
 		return
 	}
+
 	c.Status(http.StatusNoContent)
 }

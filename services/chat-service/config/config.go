@@ -14,6 +14,7 @@ type (
 		PG       PG
 		Swagger  Swagger
 		AuthGRPC AuthGRPC
+		Cleanup  Cleanup
 	}
 
 	// App -.
@@ -48,6 +49,11 @@ type (
 	// Swagger -.
 	Swagger struct {
 		Enabled bool `env:"SWAGGER_ENABLED" envDefault:"false"`
+	}
+
+	Cleanup struct {
+		Cron     string `env:"CLEANUP_CRON"`
+		HoursAgo int    `env:"CLEANUP_THRESHOLD_HOURS"`
 	}
 )
 

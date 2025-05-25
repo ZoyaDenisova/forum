@@ -47,18 +47,21 @@ func NewHandler(
 func (h *Handler) Register(c *gin.Context) {
 	var req RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
 		return
 	}
+
 	if err := h.userUC.Register(c.Request.Context(), req.Name, req.Email, req.Password); err != nil {
 		if errors.Is(err, usecase.ErrUserExists) {
-			c.JSON(http.StatusConflict, ErrorResponse{Code: "USER_EXISTS", Message: "user already exists"})
+			c.AbortWithStatusJSON(http.StatusConflict, ErrorResponse{Code: "USER_EXISTS", Message: "user already exists"})
 			return
 		}
-		h.log.Error("Register failed", err)
-		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "internal server error"})
+
+		h.log.Error("Register failed", "err", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Message: "internal server error"})
 		return
 	}
+
 	c.Status(http.StatusCreated)
 }
 
@@ -78,23 +81,29 @@ func (h *Handler) Register(c *gin.Context) {
 func (h *Handler) Login(c *gin.Context) {
 	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
 		return
 	}
+
 	access, refresh, err := h.userUC.Login(c.Request.Context(), req.Email, req.Password, c.Request.UserAgent())
 	if err != nil {
 		if errors.Is(err, usecase.ErrInvalidCreds) {
-			c.JSON(http.StatusUnauthorized, ErrorResponse{Code: "INVALID_CREDENTIALS", Message: "invalid credentials"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, ErrorResponse{
+				Code:    "INVALID_CREDENTIALS",
+				Message: "invalid credentials",
+			})
 			return
 		}
-		h.log.Error("Login failed", err)
-		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "internal server error"})
+		h.log.Error("Login failed", "err", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Message: "internal server error"})
 		return
 	}
+
 	// устанавливаем refresh-token в HttpOnly cookie
 	ttl := int(h.cfg.JWT.RefreshTTL.Seconds())
 	c.SetCookie(RefreshCookieName, refresh, ttl, "/", "", true, true)
 	c.Header("Set-Cookie", c.Writer.Header().Get("Set-Cookie")+"; SameSite=Strict")
+
 	// возвращаем access-token
 	c.JSON(http.StatusOK, TokenResponse{AccessToken: access})
 }
@@ -102,14 +111,6 @@ func (h *Handler) Login(c *gin.Context) {
 // Me — GET /auth/me
 // @Summary      Get current user
 // @Description  Return profile of authenticated user
-// @Tags         Auth
-// @Produce      json
-// @Success      200  {object}  UserResponse
-// @Failure      401  {object}  ErrorResponse
-// @Router       /auth/me [get]
-// @Security     BearerAuth
-// Me возвращает профиль текущего пользователя
-// @Summary      Get current user
 // @Tags         Auth
 // @Security     BearerAuth
 // @Produce      json
@@ -121,7 +122,7 @@ func (h *Handler) Login(c *gin.Context) {
 func (h *Handler) Me(c *gin.Context) {
 	userID, _ := UserIDFromCtx(c.Request.Context())
 	if userID == 0 {
-		c.JSON(http.StatusUnauthorized, ErrorResponse{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, ErrorResponse{
 			Code:    "UNAUTHORIZED",
 			Message: "access token required",
 		})
@@ -130,19 +131,18 @@ func (h *Handler) Me(c *gin.Context) {
 
 	user, err := h.userUC.GetByID(c.Request.Context(), userID)
 	if err != nil {
-		// если пользователь не найден
 		if errors.Is(err, dbErrors.ErrNotFound) {
-			c.JSON(http.StatusNotFound, ErrorResponse{
+			c.AbortWithStatusJSON(http.StatusNotFound, ErrorResponse{
 				Code:    "USER_NOT_FOUND",
 				Message: "user not found",
 			})
-		} else {
-			h.log.Error("get user by ID failed", err)
-			c.JSON(http.StatusInternalServerError, ErrorResponse{
-				Code:    "INTERNAL_SERVER_ERROR",
-				Message: "failed to fetch user",
-			})
+			return
 		}
+		h.log.Error("get user by ID failed", "err", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{
+			Code:    "INTERNAL_SERVER_ERROR",
+			Message: "failed to fetch user",
+		})
 		return
 	}
 
@@ -164,18 +164,18 @@ func (h *Handler) Me(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        request body      UpdateUserRequest  true  "Поля для обновления"
-// @Success      204      {string}  string             "No Content"
-// @Failure      400      {object}  ErrorResponse
-// @Failure      401      {object}  ErrorResponse
-// @Failure      404      {object}  ErrorResponse
-// @Failure      409      {object}  ErrorResponse
-// @Failure      500      {object}  ErrorResponse
+// @Success      204
+// @Failure      400 {object} ErrorResponse
+// @Failure      401 {object} ErrorResponse
+// @Failure      404 {object} ErrorResponse
+// @Failure      409 {object} ErrorResponse
+// @Failure      500 {object} ErrorResponse
 // @Security     BearerAuth
 // @Router       /auth/user [patch]
 func (h *Handler) UpdateUser(c *gin.Context) {
 	var req UpdateUserRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
 		return
 	}
 
@@ -190,18 +190,18 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 	if err := h.userUC.Update(c.Request.Context(), userID, params); err != nil {
 		switch {
 		case errors.Is(err, usecase.ErrUserExists):
-			c.JSON(http.StatusConflict, ErrorResponse{
+			c.AbortWithStatusJSON(http.StatusConflict, ErrorResponse{
 				Code:    "USER_EXISTS",
 				Message: "email already in use",
 			})
 		case errors.Is(err, dbErrors.ErrNotFound):
-			c.JSON(http.StatusNotFound, ErrorResponse{
+			c.AbortWithStatusJSON(http.StatusNotFound, ErrorResponse{
 				Code:    "USER_NOT_FOUND",
 				Message: "user not found",
 			})
 		default:
-			h.log.Error("UpdateUser failed", err)
-			c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "internal server error"})
+			h.log.Error("UpdateUser failed", "err", err)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Message: "internal server error"})
 		}
 		return
 	}
@@ -223,19 +223,28 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 func (h *Handler) Refresh(c *gin.Context) {
 	rt, err := c.Cookie(RefreshCookieName)
 	if err != nil || rt == "" {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Code: "NO_REFRESH_TOKEN", Message: "refresh token is missing"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{
+			Code:    "NO_REFRESH_TOKEN",
+			Message: "refresh token is missing",
+		})
 		return
 	}
+
 	access, newRT, err := h.sessUC.Refresh(c.Request.Context(), rt)
 	if err != nil {
-		h.log.Warn("Refresh failed", err)
-		c.JSON(http.StatusUnauthorized, ErrorResponse{Code: "INVALID_TOKEN", Message: "invalid or expired refresh token"})
+		h.log.Warn("Refresh failed", "err", err)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, ErrorResponse{
+			Code:    "INVALID_TOKEN",
+			Message: "invalid or expired refresh token",
+		})
 		return
 	}
+
 	// обновляем cookie
 	ttl := int(h.cfg.JWT.RefreshTTL.Seconds())
 	c.SetCookie(RefreshCookieName, newRT, ttl, "/", "", true, true)
 	c.Header("Set-Cookie", c.Writer.Header().Get("Set-Cookie")+"; SameSite=Strict")
+
 	c.JSON(http.StatusOK, TokenResponse{AccessToken: access})
 }
 
@@ -245,14 +254,26 @@ func (h *Handler) Refresh(c *gin.Context) {
 // @Tags         Auth
 // @Produce      json
 // @Success      200  {array}  SessionResponse
+// @Failure      401  {object}  ErrorResponse
 // @Failure      500  {object}  ErrorResponse
+// @Security     BearerAuth
 // @Router       /auth/sessions [get]
 func (h *Handler) GetSessions(c *gin.Context) {
 	userID, _ := UserIDFromCtx(c.Request.Context())
+	if userID == 0 {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, ErrorResponse{
+			Code:    "UNAUTHORIZED",
+			Message: "access token required",
+		})
+		return
+	}
+
 	sessions, err := h.sessUC.List(c.Request.Context(), userID)
 	if err != nil {
-		h.log.Error("GetSessions failed", err)
-		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "failed to list sessions"})
+		h.log.Error("GetSessions failed", "err", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{
+			Message: "failed to list sessions",
+		})
 		return
 	}
 
@@ -274,24 +295,34 @@ func (h *Handler) GetSessions(c *gin.Context) {
 // @Description  Log out current session by revoking refreshToken from cookie
 // @Tags         Auth
 // @Produce      json
-// @Success      204      {string}  string           "No Content"
-// @Failure      400      {object}  ErrorResponse
-// @Failure      500      {object}  ErrorResponse
+// @Success      204
+// @Failure      400  {object}  ErrorResponse
+// @Failure      401  {object}  ErrorResponse
+// @Failure      500  {object}  ErrorResponse
+// @Security     BearerAuth
 // @Router       /auth/session [delete]
 func (h *Handler) DeleteSession(c *gin.Context) {
 	rt, err := c.Cookie(RefreshCookieName)
 	if err != nil || rt == "" {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Code: "NO_REFRESH_TOKEN", Message: "refresh token is missing"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{
+			Code:    "NO_REFRESH_TOKEN",
+			Message: "refresh token is missing",
+		})
 		return
 	}
+
 	if err := h.sessUC.Revoke(c.Request.Context(), rt); err != nil {
-		h.log.Error("Revoke session failed", err)
-		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "failed to revoke session"})
+		h.log.Error("Revoke session failed", "err", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{
+			Message: "failed to revoke session",
+		})
 		return
 	}
+
 	// удаляем cookie
 	c.SetCookie(RefreshCookieName, "", -1, "/", "", true, true)
 	c.Header("Set-Cookie", c.Writer.Header().Get("Set-Cookie")+"; SameSite=Strict")
+
 	c.Status(http.StatusNoContent)
 }
 
@@ -300,18 +331,32 @@ func (h *Handler) DeleteSession(c *gin.Context) {
 // @Description  Log out all sessions for the current user
 // @Tags         Auth
 // @Produce      json
-// @Success      204      {string}  string           "No Content"
-// @Failure      500      {object}  ErrorResponse
+// @Success      204
+// @Failure      401  {object}  ErrorResponse
+// @Failure      500  {object}  ErrorResponse
+// @Security     BearerAuth
 // @Router       /auth/sessions [delete]
 func (h *Handler) DeleteAllSessions(c *gin.Context) {
 	uid, _ := UserIDFromCtx(c.Request.Context())
-	if err := h.sessUC.RevokeAll(c.Request.Context(), uid); err != nil {
-		h.log.Error("Revoke all sessions failed", err)
-		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "failed to revoke all sessions"})
+	if uid == 0 {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, ErrorResponse{
+			Code:    "UNAUTHORIZED",
+			Message: "access token required",
+		})
 		return
 	}
+
+	if err := h.sessUC.RevokeAll(c.Request.Context(), uid); err != nil {
+		h.log.Error("Revoke all sessions failed", "err", err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{
+			Message: "failed to revoke all sessions",
+		})
+		return
+	}
+
 	// удаляем текущую cookie
 	c.SetCookie(RefreshCookieName, "", -1, "/", "", true, true)
 	c.Header("Set-Cookie", c.Writer.Header().Get("Set-Cookie")+"; SameSite=Strict")
+
 	c.Status(http.StatusNoContent)
 }

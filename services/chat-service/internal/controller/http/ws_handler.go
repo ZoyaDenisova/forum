@@ -2,6 +2,7 @@ package http
 
 import (
 	"chat-service/internal/entity"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -23,32 +24,26 @@ func NewWSHandler(h *ws.Hub) *WSHandler {
 	return &WSHandler{Hub: h}
 }
 
-// ServeWS — GET /ws/topics/{topicId}
+// ServeWS — GET /ws/topics/{id}
 // @Summary      WebSocket for real-time chat
 // @Description  Subscribes to live messages in a topic
 // @Tags         WebSocket
-// @Param        topicId  path      int  true  "Topic ID"
-// @Success      101      {string}  string  "Switching Protocols"
-// @Failure      400      {object}  ErrorResponse
-// @Failure      401      {object}  ErrorResponse
+// @Param        id   path      int  true  "Topic ID"
+// @Success      101  {string}  string  "Switching Protocols"
+// @Failure      400  {object}  ErrorResponse
+// @Failure      401  {object}  ErrorResponse
 // @Security     BearerAuth
-// @Router       /ws/topics/{topicId} [get]
+// @Router       /ws/topics/{id} [get]
 func (h *WSHandler) ServeWS(c *gin.Context) {
-	// проверка авторизации не обязательна для чтения, но нужна для идентификации
-	userID, _ := UserIDFromCtx(c.Request.Context())
-	if userID == 0 {
-		c.JSON(http.StatusUnauthorized, ErrorResponse{Message: "unauthorized"})
-		return
-	}
-
-	tid, err := strconv.ParseInt(c.Param("topicId"), 10, 64)
+	tid, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: "invalid topic id"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Message: "invalid topic id"})
 		return
 	}
 
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
+		fmt.Println("WebSocket upgrade failed:", err)
 		return
 	}
 

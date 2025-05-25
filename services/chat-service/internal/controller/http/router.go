@@ -20,6 +20,8 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+//todo проверить логирование на всем проекте
+
 // NewRouter настраивает все HTTP- и WebSocket-эндпоинты для chat-сервиса
 func NewRouter(
 	log logger.Interface,
@@ -75,7 +77,7 @@ func NewRouter(
 	r.GET("/topics/:id", topicH.GetTopic)
 	r.GET("/topics/:id/messages", msgH.GetMessages)
 	// подписка по WebSocket (можно без авторизации чтения, но мы всё же проверяем токен)
-	r.GET("/ws/topics/:id", AuthMiddleware(authClient), wsH.ServeWS)
+	r.GET("/ws/topics/:id", wsH.ServeWS)
 
 	// PROTECTED
 	secured := r.Group("/")

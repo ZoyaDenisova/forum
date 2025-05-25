@@ -59,3 +59,95 @@
 {"level":"info","time":"2025-05-19T13:53:32.032+0400","caller":"app/app.go:82","msg":"HTTP listening%!(EXTRA zapcore.Field={port 15 0 8081 <nil>})"}
 {"level":"info","time":"2025-05-19T14:51:25.100+0400","caller":"app/app.go:92","msg":"shutdown signal received"}
 {"level":"info","time":"2025-05-19T14:51:25.100+0400","caller":"app/app.go:99","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T00:03:49.221+0400","caller":"app/app.go:28","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T00:03:49.249+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T00:05:17.521+0400","caller":"app/app.go:28","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T00:05:17.548+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T00:06:01.785+0400","caller":"app/app.go:85","msg":"HTTP listening","port":"8081"}
+{"level":"debug","time":"2025-05-25T00:23:25.575+0400","caller":"usecase/topis.go:31","msg":"ListTopics called","category_id":1}
+{"level":"info","time":"2025-05-25T00:23:25.782+0400","caller":"usecase/topis.go:42","msg":"topics retrieved","count":1,"category_id":1}
+{"level":"info","time":"2025-05-25T00:30:41.571+0400","caller":"app/app.go:95","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T00:30:41.571+0400","caller":"app/app.go:103","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T00:31:54.304+0400","caller":"app/app.go:28","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T00:31:54.332+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T00:31:54.339+0400","caller":"app/app.go:85","msg":"HTTP listening","port":"8081"}
+{"level":"debug","time":"2025-05-25T00:32:26.520+0400","caller":"usecase/category.go:29","msg":"CategoryUC.ListCategories called"}
+{"level":"info","time":"2025-05-25T00:32:26.626+0400","caller":"usecase/category.go:40","msg":"categories retrieved","count":1}
+{"level":"debug","time":"2025-05-25T00:33:06.171+0400","caller":"usecase/topis.go:31","msg":"ListTopics called","category_id":1}
+{"level":"info","time":"2025-05-25T00:33:06.173+0400","caller":"usecase/topis.go:42","msg":"topics retrieved","count":1,"category_id":1}
+{"level":"info","time":"2025-05-25T00:57:02.684+0400","caller":"app/app.go:95","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T00:57:02.684+0400","caller":"app/app.go:103","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T00:57:06.196+0400","caller":"app/app.go:28","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T00:57:06.223+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T00:57:06.231+0400","caller":"app/app.go:85","msg":"HTTP listening","port":"8081"}
+{"level":"debug","time":"2025-05-25T00:57:59.792+0400","caller":"usecase/category.go:29","msg":"CategoryUC.ListCategories called"}
+{"level":"info","time":"2025-05-25T00:57:59.991+0400","caller":"usecase/category.go:40","msg":"categories retrieved","count":1}
+{"level":"debug","time":"2025-05-25T00:58:15.438+0400","caller":"usecase/topis.go:66","msg":"CreateTopic called","title":"strifffffffffffffffffffffffffffffffng","category_id":1}
+{"level":"error","time":"2025-05-25T00:58:15.456+0400","caller":"usecase/topis.go:87","msg":"repo.Create failed","err":"TopicRepo.Create: ОШИБКА: повторяющееся значение ключа нарушает ограничение уникальности \"topics_pkey\" (SQLSTATE 23505)"}
+{"level":"debug","time":"2025-05-25T00:59:06.927+0400","caller":"usecase/topis.go:66","msg":"CreateTopic called","title":"strifffffffffffffffffffffffffffffffng","category_id":2}
+{"level":"error","time":"2025-05-25T00:59:06.941+0400","caller":"usecase/topis.go:87","msg":"repo.Create failed","err":"TopicRepo.Create: ОШИБКА: INSERT или UPDATE в таблице \"topics\" нарушает ограничение внешнего ключа \"topics_category_id_fkey\" (SQLSTATE 23503)"}
+{"level":"debug","time":"2025-05-25T00:59:46.737+0400","caller":"usecase/topis.go:66","msg":"CreateTopic called","title":"strifffffffffffffffffffffffffffffffng","category_id":1}
+{"level":"info","time":"2025-05-25T00:59:46.741+0400","caller":"usecase/topis.go:91","msg":"topic created","id":3,"category_id":1}
+{"level":"info","time":"2025-05-25T01:00:00.000+0400","caller":"cron/cleanup.go:33","msg":"cron: running message cleanup","threshold":"2025-05-23T21:00:00.000Z"}
+{"level":"debug","time":"2025-05-25T01:00:00.000+0400","caller":"usecase/message.go:154","msg":"CleanupOldMessages called","threshold":"2025-05-23T21:00:00.000Z"}
+{"level":"info","time":"2025-05-25T01:00:00.033+0400","caller":"usecase/message.go:161","msg":"old messages deleted","threshold":"2025-05-23T21:00:00.000Z"}
+{"level":"debug","time":"2025-05-25T01:00:11.885+0400","caller":"usecase/topis.go:66","msg":"CreateTopic called","title":"strifffffffffffggffffffffffffffffffffng","category_id":1}
+{"level":"info","time":"2025-05-25T01:00:11.898+0400","caller":"usecase/topis.go:91","msg":"topic created","id":4,"category_id":1}
+{"level":"debug","time":"2025-05-25T01:00:53.533+0400","caller":"usecase/topis.go:66","msg":"CreateTopic called","title":"5555555g","category_id":1}
+{"level":"info","time":"2025-05-25T01:00:53.546+0400","caller":"usecase/topis.go:91","msg":"topic created","id":5,"category_id":1}
+{"level":"debug","time":"2025-05-25T01:01:31.968+0400","caller":"usecase/category.go:65","msg":"CreateCategory called","title":"strin2g"}
+{"level":"warn","time":"2025-05-25T01:01:31.968+0400","caller":"usecase/category.go:73","msg":"unauthorized role tried to create category","role":"user"}
+{"level":"debug","time":"2025-05-25T01:02:00.240+0400","caller":"usecase/category.go:65","msg":"CreateCategory called","title":"strin2g"}
+{"level":"warn","time":"2025-05-25T01:02:00.240+0400","caller":"usecase/category.go:73","msg":"unauthorized role tried to create category","role":"user"}
+{"level":"info","time":"2025-05-25T01:02:12.680+0400","caller":"app/app.go:95","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T01:02:12.680+0400","caller":"app/app.go:103","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T01:02:14.106+0400","caller":"app/app.go:28","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T01:02:14.135+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T01:02:14.143+0400","caller":"app/app.go:85","msg":"HTTP listening","port":"8081"}
+{"level":"debug","time":"2025-05-25T01:04:08.440+0400","caller":"usecase/topis.go:66","msg":"CreateTopic called","title":"string","category_id":1}
+{"level":"info","time":"2025-05-25T01:04:08.552+0400","caller":"usecase/topis.go:91","msg":"topic created","id":6,"category_id":1}
+{"level":"debug","time":"2025-05-25T01:04:30.813+0400","caller":"usecase/category.go:65","msg":"CreateCategory called","title":"string"}
+{"level":"error","time":"2025-05-25T01:04:30.815+0400","caller":"usecase/category.go:83","msg":"repo.Create failed","err":"CategoryRepo.Create: ОШИБКА: повторяющееся значение ключа нарушает ограничение уникальности \"categories_pkey\" (SQLSTATE 23505)"}
+{"level":"debug","time":"2025-05-25T01:04:40.415+0400","caller":"usecase/category.go:65","msg":"CreateCategory called","title":"string"}
+{"level":"info","time":"2025-05-25T01:04:40.428+0400","caller":"usecase/category.go:87","msg":"category created","id":2,"title":"string"}
+{"level":"debug","time":"2025-05-25T01:05:42.373+0400","caller":"usecase/message.go:37","msg":"SendMessage called","topic_id":1,"author_id":12}
+{"level":"info","time":"2025-05-25T01:05:42.377+0400","caller":"usecase/message.go:62","msg":"message sent","id":0,"topic_id":1}
+{"level":"info","time":"2025-05-25T01:08:11.153+0400","caller":"app/app.go:95","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T01:08:11.153+0400","caller":"app/app.go:103","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T01:08:24.668+0400","caller":"app/app.go:28","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T01:08:24.696+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T01:08:24.704+0400","caller":"app/app.go:85","msg":"HTTP listening","port":"8081"}
+{"level":"info","time":"2025-05-25T01:12:08.330+0400","caller":"app/app.go:95","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T01:12:08.330+0400","caller":"app/app.go:103","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T01:12:11.819+0400","caller":"app/app.go:28","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T01:12:11.846+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T01:12:11.855+0400","caller":"app/app.go:85","msg":"HTTP listening","port":"8081"}
+{"level":"info","time":"2025-05-25T01:16:21.566+0400","caller":"app/app.go:95","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T01:16:21.566+0400","caller":"app/app.go:103","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T01:16:24.686+0400","caller":"app/app.go:28","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T01:16:24.713+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T01:16:24.722+0400","caller":"app/app.go:85","msg":"HTTP listening","port":"8081"}
+{"level":"info","time":"2025-05-25T01:18:13.841+0400","caller":"app/app.go:95","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T01:18:13.841+0400","caller":"app/app.go:103","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T01:18:17.056+0400","caller":"app/app.go:28","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T01:18:17.086+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T01:18:17.094+0400","caller":"app/app.go:85","msg":"HTTP listening","port":"8081"}
+{"level":"debug","time":"2025-05-25T01:29:28.699+0400","caller":"usecase/category.go:65","msg":"CreateCategory called","title":"strinrg"}
+{"level":"warn","time":"2025-05-25T01:29:28.699+0400","caller":"usecase/category.go:73","msg":"unauthorized role tried to create category","role":"user"}
+{"level":"info","time":"2025-05-25T01:33:01.332+0400","caller":"app/app.go:95","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T01:33:01.332+0400","caller":"app/app.go:103","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T01:33:04.614+0400","caller":"app/app.go:28","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T01:33:04.643+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T01:33:04.650+0400","caller":"app/app.go:85","msg":"HTTP listening","port":"8081"}
+{"level":"debug","time":"2025-05-25T01:33:24.148+0400","caller":"usecase/category.go:65","msg":"CreateCategory called","title":"string"}
+{"level":"warn","time":"2025-05-25T01:33:24.148+0400","caller":"usecase/category.go:73","msg":"unauthorized role tried to create category","role":"user"}
+{"level":"info","time":"2025-05-25T02:00:00.000+0400","caller":"cron/cleanup.go:33","msg":"cron: running message cleanup","threshold":"2025-05-23T22:00:00.000Z"}
+{"level":"debug","time":"2025-05-25T02:00:00.000+0400","caller":"usecase/message.go:154","msg":"CleanupOldMessages called","threshold":"2025-05-23T22:00:00.000Z"}
+{"level":"info","time":"2025-05-25T02:00:00.098+0400","caller":"usecase/message.go:161","msg":"old messages deleted","threshold":"2025-05-23T22:00:00.000Z"}
+{"level":"info","time":"2025-05-25T02:10:59.796+0400","caller":"app/app.go:95","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T02:10:59.796+0400","caller":"app/app.go:103","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T02:11:03.411+0400","caller":"app/app.go:28","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T02:11:03.440+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T02:11:03.448+0400","caller":"app/app.go:85","msg":"HTTP listening","port":"8081"}
+{"level":"info","time":"2025-05-25T02:14:51.312+0400","caller":"app/app.go:95","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T02:14:51.312+0400","caller":"app/app.go:103","msg":"server stopped gracefully"}

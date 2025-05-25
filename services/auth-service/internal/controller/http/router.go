@@ -107,7 +107,7 @@ func NewRouter(
 			secured.DELETE("/sessions", h.DeleteAllSessions)
 			secured.GET("/sessions", h.GetSessions)
 			secured.GET("/me", h.Me)
-			secured.PATCH("/auth/user", h.UpdateUser)
+			secured.PATCH("/user", h.UpdateUser)
 		}
 	}
 

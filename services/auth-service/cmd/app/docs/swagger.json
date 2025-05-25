@@ -75,18 +75,13 @@
                 "security": [
                     {
                         "BearerAuth": []
-                    },
-                    {
-                        "BearerAuth": []
                     }
                 ],
                 "description": "Return profile of authenticated user",
                 "produces": [
-                    "application/json",
                     "application/json"
                 ],
                 "tags": [
-                    "Auth",
                     "Auth"
                 ],
                 "summary": "Get current user",
@@ -213,6 +208,11 @@
         },
         "/auth/session": {
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Log out current session by revoking refreshToken from cookie",
                 "produces": [
                     "application/json"
@@ -223,13 +223,16 @@
                 "summary": "Revoke current session",
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/http.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/http.ErrorResponse"
                         }
@@ -245,6 +248,11 @@
         },
         "/auth/sessions": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns all active sessions for the user",
                 "produces": [
                     "application/json"
@@ -263,6 +271,12 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/http.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -272,6 +286,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Log out all sessions for the current user",
                 "produces": [
                     "application/json"
@@ -282,9 +301,12 @@
                 "summary": "Revoke all sessions",
                 "responses": {
                     "204": {
-                        "description": "No Content",
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/http.ErrorResponse"
                         }
                     },
                     "500": {
@@ -327,10 +349,7 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request",
