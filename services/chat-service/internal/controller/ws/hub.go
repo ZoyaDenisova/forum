@@ -31,13 +31,13 @@ func (h *Hub) Unregister(c *Client) {
 }
 
 // Publish рассылает сообщение всем клиентам, подписанным на topicID
-func (h *Hub) Publish(topicID int64, msg *entity.Message) {
+func (h *Hub) Publish(topicID int64, ev *entity.WSEvent) {
 	h.mu.RLock()
 	defer h.mu.RUnlock()
 	for c := range h.clients {
 		if c.TopicID == topicID {
 			select {
-			case c.Send <- msg:
+			case c.Send <- ev:
 			default:
 			}
 		}

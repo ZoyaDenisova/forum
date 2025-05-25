@@ -51,7 +51,7 @@ func (h *WSHandler) ServeWS(c *gin.Context) {
 		Conn:    conn,
 		Hub:     h.Hub,
 		TopicID: tid,
-		Send:    make(chan *entity.Message, 32),
+		Send:    make(chan *entity.WSEvent, 32),
 	}
 	h.Hub.Register(client)
 	client.Listen()

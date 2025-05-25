@@ -10,13 +10,16 @@ type Client struct {
 	Conn    *websocket.Conn
 	Hub     *Hub
 	TopicID int64
-	Send    chan *entity.Message
+	Send    chan *entity.WSEvent
 }
 
 func (c *Client) Listen() {
 	defer func() {
 		c.Hub.Unregister(c)
-		c.Conn.Close()
+		err := c.Conn.Close()
+		if err != nil {
+			return
+		}
 	}()
 
 	go c.writePump()
@@ -30,9 +33,12 @@ func (c *Client) Listen() {
 }
 
 func (c *Client) writePump() {
-	for msg := range c.Send {
-		c.Conn.SetWriteDeadline(time.Now().Add(5 * time.Second))
-		if err := c.Conn.WriteJSON(msg); err != nil {
+	for ev := range c.Send {
+		err := c.Conn.SetWriteDeadline(time.Now().Add(5 * time.Second))
+		if err != nil {
+			return
+		}
+		if err := c.Conn.WriteJSON(ev); err != nil {
 			break
 		}
 	}

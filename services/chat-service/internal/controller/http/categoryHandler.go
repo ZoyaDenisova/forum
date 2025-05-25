@@ -14,7 +14,6 @@ type CategoryHandler struct {
 	uc usecase.CategoryUsecase
 }
 
-//todo добавить логирование в хендлеры (интерфейс логгера)
 //todo покрытие тестами
 
 func NewCategoryHandler(uc usecase.CategoryUsecase) *CategoryHandler {

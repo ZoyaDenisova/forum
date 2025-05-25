@@ -18,7 +18,7 @@ var (
 )
 
 type MessagePublisher interface {
-	Publish(topicID int64, m *entity.Message)
+	Publish(topicID int64, m *entity.WSEvent)
 }
 
 type MessageUC struct {
@@ -58,7 +58,10 @@ func (uc *MessageUC) SendMessage(ctx context.Context, p SendMessageParams) (*ent
 		return nil, fmt.Errorf("MessageUC.Send: %w", err)
 	}
 
-	uc.publisher.Publish(p.TopicID, m)
+	uc.publisher.Publish(p.TopicID, &entity.WSEvent{
+		Action:  entity.ActionCreated,
+		Message: m,
+	})
 	uc.log.Info("message sent", "id", m.ID, "topic_id", m.TopicID)
 	return m, nil
 }
@@ -95,6 +98,19 @@ func (uc *MessageUC) UpdateMessage(ctx context.Context, id int64, newContent str
 		return fmt.Errorf("MessageUC.Update: %w", err)
 	}
 
+	updated := &entity.Message{
+		ID:        id,
+		TopicID:   m.TopicID,
+		AuthorID:  m.AuthorID,
+		Content:   newContent,
+		CreatedAt: m.CreatedAt,
+	}
+
+	uc.publisher.Publish(m.TopicID, &entity.WSEvent{
+		Action:  entity.ActionUpdated,
+		Message: updated,
+	})
+
 	uc.log.Info("message updated", "id", id)
 	return nil
 }
@@ -130,6 +146,11 @@ func (uc *MessageUC) DeleteMessage(ctx context.Context, id int64) error {
 		uc.log.Error("repo.Delete failed", "err", err)
 		return fmt.Errorf("MessageUC.Delete: %w", err)
 	}
+
+	uc.publisher.Publish(m.TopicID, &entity.WSEvent{
+		Action:    entity.ActionDeleted,
+		MessageID: id,
+	})
 
 	uc.log.Info("message deleted", "id", id)
 	return nil

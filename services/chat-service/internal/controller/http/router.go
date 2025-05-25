@@ -20,8 +20,6 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-//todo проверить логирование на всем проекте
-
 // NewRouter настраивает все HTTP- и WebSocket-эндпоинты для chat-сервиса
 func NewRouter(
 	log logger.Interface,
