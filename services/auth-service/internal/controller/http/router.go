@@ -104,6 +104,7 @@ func NewRouter(
 		secured := r.Group("/users")
 		secured.Use(AuthMiddleware(tm))
 		{
+			secured.GET("/users", h.GetAllUsers)
 			secured.POST("/:id/block", h.BlockUser)
 			secured.POST("/:id/unblock", h.UnblockUser)
 		}

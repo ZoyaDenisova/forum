@@ -233,3 +233,18 @@ func (uc *UserUsecase) Unblock(ctx context.Context, targetID int64) error {
 	uc.log.Info("user unblocked", "targetID", targetID)
 	return nil
 }
+
+func (uc *UserUsecase) GetAll(ctx context.Context) ([]*entity.User, error) {
+	_, role := auth.FromContext(ctx)
+	if role != "admin" {
+		return nil, ErrForbidden
+	}
+
+	users, err := uc.userRepo.GetAll(ctx)
+	if err != nil {
+		uc.log.Error("get all users failed", "err", err)
+		return nil, fmt.Errorf("UserUsecase.GetAll: %w", err)
+	}
+
+	return users, nil
+}

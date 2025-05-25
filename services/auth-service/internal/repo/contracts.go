@@ -13,6 +13,7 @@ type (
 		GetByID(ctx context.Context, userID int64) (*entity.User, error)
 		GetByEmail(ctx context.Context, email string) (*entity.User, error)
 		GetByUsername(ctx context.Context, username string) (*entity.User, error)
+		GetAll(ctx context.Context) ([]*entity.User, error)
 		Unblock(ctx context.Context, id int64) error
 		Block(ctx context.Context, id int64) error
 	}

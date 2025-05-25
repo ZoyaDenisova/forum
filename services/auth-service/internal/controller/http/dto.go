@@ -24,6 +24,7 @@ type UserResponse struct {
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Role      string    `json:"role"`
+	IsBlocked bool      `json:"is_blocked"`
 	CreatedAt time.Time `json:"created_at"`
 }
 

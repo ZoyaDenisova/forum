@@ -115,6 +115,30 @@ func (r *UserRepoPostgres) GetByUsername(ctx context.Context, username string) (
 	return &u, nil
 }
 
+func (r *UserRepoPostgres) GetAll(ctx context.Context) ([]*entity.User, error) {
+	const query = `
+		SELECT id, name, email, password_hash, role, is_blocked, created_at
+		FROM users
+		ORDER BY id
+	`
+
+	rows, err := r.Pool.Query(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("UserRepo.GetAll: query: %w", err)
+	}
+	defer rows.Close()
+
+	var users []*entity.User
+	for rows.Next() {
+		var u entity.User
+		if err := scanUser(rows, &u); err != nil {
+			return nil, fmt.Errorf("UserRepo.GetAll: scan: %w", err)
+		}
+		users = append(users, &u)
+	}
+	return users, nil
+}
+
 func (r *UserRepoPostgres) Unblock(ctx context.Context, id int64) error {
 	const op = "UserRepo.block"
 	const query = `UPDATE users SET is_blocked = $1 WHERE id = $2`

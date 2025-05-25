@@ -13,6 +13,7 @@ type (
 		GetByID(ctx context.Context, id int64) (*entity.User, error)
 		Unblock(ctx context.Context, targetID int64) error
 		Block(ctx context.Context, targetID int64) error
+		GetAll(ctx context.Context) ([]*entity.User, error)
 	}
 	Session interface {
 		Refresh(ctx context.Context, oldToken string) (string, string, error)

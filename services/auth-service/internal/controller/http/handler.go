@@ -469,3 +469,43 @@ func (h *Handler) UnblockUser(c *gin.Context) {
 
 	c.Status(http.StatusNoContent)
 }
+
+// GetAllUsers godoc
+// @Summary      Получить список всех пользователей (только для админа)
+// @Tags         Users
+// @Produce      json
+// @Success 200 {array} UserResponse
+// @Failure      401 {object} ErrorResponse
+// @Failure      403 {object} ErrorResponse
+// @Failure      500 {object} ErrorResponse
+// @Security     BearerAuth
+// @Router       /users [get]
+func (h *Handler) GetAllUsers(c *gin.Context) {
+	users, err := h.userUC.GetAll(c.Request.Context())
+	if err != nil {
+		switch {
+		case errors.Is(err, usecase.ErrForbidden):
+			c.AbortWithStatusJSON(http.StatusForbidden, ErrorResponse{
+				Code:    "FORBIDDEN",
+				Message: "admin only",
+			})
+		default:
+			h.log.Error("get all users failed", "err", err)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Message: "internal error"})
+		}
+		return
+	}
+	var resp []UserResponse
+	for _, u := range users {
+		resp = append(resp, UserResponse{
+			ID:        u.ID,
+			Name:      u.Name,
+			Email:     u.Email,
+			Role:      u.Role,
+			IsBlocked: u.IsBlocked,
+			CreatedAt: u.CreatedAt,
+		})
+	}
+	c.JSON(http.StatusOK, resp)
+
+}
