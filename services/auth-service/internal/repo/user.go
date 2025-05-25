@@ -9,8 +9,6 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-// TODO время задавать в юскейсах
-// todo хранить роль в JWT-токене: При генерации access-токена добавлять поле role, чтобы фронт и backend могли делать проверки без запроса к БД
 type UserRepoPostgres struct {
 	*postgres.Postgres
 }
@@ -19,22 +17,31 @@ func NewUserRepo(pg *postgres.Postgres) *UserRepoPostgres {
 	return &UserRepoPostgres{pg}
 }
 
+// Create сохраняет нового пользователя.
 func (r *UserRepoPostgres) Create(ctx context.Context, u *entity.User) error {
-	query := `
-		INSERT INTO users (name, email, password_hash, role, created_at)
-		VALUES ($1, $2, $3, $4, $5)
-		RETURNING id
-	`
-	return r.Pool.QueryRow(ctx, query, u.Name, u.Email, u.PasswordHash, u.Role, u.CreatedAt).Scan(&u.ID)
+	const query = `
+        INSERT INTO users (name, email, password_hash, role, is_blocked, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id
+    `
+	return r.Pool.QueryRow(ctx, query,
+		u.Name, u.Email, u.PasswordHash, u.Role, u.IsBlocked, u.CreatedAt).
+		Scan(&u.ID)
 }
 
+// Update изменяет всё, включая флаг блокировки.
 func (r *UserRepoPostgres) Update(ctx context.Context, u *entity.User) error {
-	query := `
-		UPDATE users
-		SET name = $1, email = $2, password_hash = $3, role = $4
-		WHERE id = $5
-	`
-	cmd, err := r.Pool.Exec(ctx, query, u.Name, u.Email, u.PasswordHash, u.Role, u.ID)
+	const query = `
+        UPDATE users
+        SET name = $1,
+            email = $2,
+            password_hash = $3,
+            role = $4,
+            is_blocked = $5
+        WHERE id = $6
+    `
+	cmd, err := r.Pool.Exec(ctx, query,
+		u.Name, u.Email, u.PasswordHash, u.Role, u.IsBlocked, u.ID)
 	if err != nil {
 		return err
 	}
@@ -44,81 +51,89 @@ func (r *UserRepoPostgres) Update(ctx context.Context, u *entity.User) error {
 	return nil
 }
 
+// scanUser – единое место, чтобы не дублировать Scan в выборках.
+func scanUser(row pgx.Row, u *entity.User) error {
+	return row.Scan(
+		&u.ID,
+		&u.Name,
+		&u.Email,
+		&u.PasswordHash,
+		&u.Role,
+		&u.IsBlocked,
+		&u.CreatedAt,
+	)
+}
+
 func (r *UserRepoPostgres) GetByID(ctx context.Context, id int64) (*entity.User, error) {
 	const op = "UserRepo.GetByID"
-
-	query := `
-		SELECT id, name, email, password_hash, role, created_at
-		FROM users
-		WHERE id = $1
-	`
-
+	const query = `
+        SELECT id, name, email, password_hash, role, is_blocked, created_at
+        FROM users
+        WHERE id = $1
+    `
 	var u entity.User
-	err := r.Pool.QueryRow(ctx, query, id).Scan(
-		&u.ID, &u.Name, &u.Email, &u.PasswordHash, &u.Role, &u.CreatedAt,
-	)
-	if err != nil {
+	if err := scanUser(r.Pool.QueryRow(ctx, query, id), &u); err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, fmt.Errorf("%s: %w", op, errors.ErrNotFound)
 		}
 		return nil, fmt.Errorf("%s: scan: %w", op, err)
 	}
-
 	return &u, nil
 }
 
 func (r *UserRepoPostgres) GetByEmail(ctx context.Context, email string) (*entity.User, error) {
 	const op = "UserRepo.GetByEmail"
-
-	query := `
-		SELECT id, name, email, password_hash, role, created_at
-		FROM users
-		WHERE email = $1
-	`
-
+	const query = `
+        SELECT id, name, email, password_hash, role, is_blocked, created_at
+        FROM users
+        WHERE email = $1
+    `
 	var u entity.User
-	err := r.Pool.QueryRow(ctx, query, email).Scan(
-		&u.ID, &u.Name, &u.Email, &u.PasswordHash, &u.Role, &u.CreatedAt,
-	)
-	if err != nil {
+	if err := scanUser(r.Pool.QueryRow(ctx, query, email), &u); err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, fmt.Errorf("%s: %w", op, errors.ErrNotFound)
 		}
 		return nil, fmt.Errorf("%s: scan: %w", op, err)
 	}
-
 	return &u, nil
 }
 
 func (r *UserRepoPostgres) GetByUsername(ctx context.Context, username string) (*entity.User, error) {
 	const op = "UserRepo.GetByUsername"
-
-	query := `
-		SELECT id, name, email, password_hash, role, created_at
-		FROM users
-		WHERE name = $1
-	`
-
+	const query = `
+        SELECT id, name, email, password_hash, role, is_blocked, created_at
+        FROM users
+        WHERE name = $1
+    `
 	var u entity.User
-	err := r.Pool.QueryRow(ctx, query, username).Scan(
-		&u.ID, &u.Name, &u.Email, &u.PasswordHash, &u.Role, &u.CreatedAt,
-	)
-	if err != nil {
+	if err := scanUser(r.Pool.QueryRow(ctx, query, username), &u); err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, fmt.Errorf("%s: %w", op, errors.ErrNotFound)
 		}
 		return nil, fmt.Errorf("%s: scan: %w", op, err)
 	}
-
 	return &u, nil
 }
 
-func (r *UserRepoPostgres) Delete(ctx context.Context, id int64) error {
-	const op = "UserRepo.Delete"
+func (r *UserRepoPostgres) Unblock(ctx context.Context, id int64) error {
+	const op = "UserRepo.block"
+	const query = `UPDATE users SET is_blocked = $1 WHERE id = $2`
 
-	query := `DELETE FROM users WHERE id = $1`
+	tag, err := r.Pool.Exec(ctx, query, false, id)
+	if err != nil {
+		return fmt.Errorf("%s: exec: %w", op, err)
+	}
+	if tag.RowsAffected() == 0 {
+		return fmt.Errorf("%s: %w", op, errors.ErrNotFound)
+	}
+	return nil
+}
 
-	tag, err := r.Pool.Exec(ctx, query, id)
+func (r *UserRepoPostgres) Block(ctx context.Context, id int64) error {
+	const op = "UserRepo.block"
+	const query = `UPDATE users SET is_blocked = $1 WHERE id = $2`
+
+	tag, err := r.Pool.Exec(ctx, query, true, id)
 	if err != nil {
 		return fmt.Errorf("%s: exec: %w", op, err)
 	}

@@ -8,5 +8,6 @@ type User struct {
 	Email        string
 	PasswordHash string // bcrypt-хэш
 	Role         string
+	IsBlocked    bool
 	CreatedAt    time.Time
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/ZoyaDenisova/go-common/logger"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 const (
@@ -87,6 +88,13 @@ func (h *Handler) Login(c *gin.Context) {
 
 	access, refresh, err := h.userUC.Login(c.Request.Context(), req.Email, req.Password, c.Request.UserAgent())
 	if err != nil {
+		if errors.Is(err, usecase.ErrUserBlocked) {
+			c.AbortWithStatusJSON(http.StatusForbidden, ErrorResponse{
+				Code:    "USER_BLOCKED",
+				Message: "account is blocked",
+			})
+			return
+		}
 		if errors.Is(err, usecase.ErrInvalidCreds) {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, ErrorResponse{
 				Code:    "INVALID_CREDENTIALS",
@@ -189,6 +197,11 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 
 	if err := h.userUC.Update(c.Request.Context(), userID, params); err != nil {
 		switch {
+		case errors.Is(err, usecase.ErrForbidden):
+			c.AbortWithStatusJSON(http.StatusForbidden, ErrorResponse{
+				Code:    "FORBIDDEN",
+				Message: "blocked user",
+			})
 		case errors.Is(err, usecase.ErrUserExists):
 			c.AbortWithStatusJSON(http.StatusConflict, ErrorResponse{
 				Code:    "USER_EXISTS",
@@ -357,6 +370,102 @@ func (h *Handler) DeleteAllSessions(c *gin.Context) {
 	// удаляем текущую cookie
 	c.SetCookie(RefreshCookieName, "", -1, "/", "", true, true)
 	c.Header("Set-Cookie", c.Writer.Header().Get("Set-Cookie")+"; SameSite=Strict")
+
+	c.Status(http.StatusNoContent)
+}
+
+// BlockUser — POST /users/{id}/block
+// @Summary      Block user (admin only)
+// @Tags         Users
+// @Produce      json
+// @Param        id   path      int  true  "User ID"
+// @Success      204
+// @Failure      400 {object} ErrorResponse
+// @Failure      401 {object} ErrorResponse
+// @Failure      403 {object} ErrorResponse
+// @Failure      404 {object} ErrorResponse
+// @Failure      500 {object} ErrorResponse
+// @Security     BearerAuth
+// @Router       /users/{id}/block [post]
+func (h *Handler) BlockUser(c *gin.Context) {
+	_, role := UserIDFromCtx(c.Request.Context())
+	if role != "admin" {
+		c.AbortWithStatusJSON(http.StatusForbidden, ErrorResponse{
+			Code:    "FORBIDDEN",
+			Message: "admin only",
+		})
+		return
+	}
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil || id <= 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{
+			Message: "invalid user id",
+		})
+		return
+	}
+
+	if err := h.userUC.Block(c.Request.Context(), id); err != nil {
+		switch {
+		case errors.Is(err, dbErrors.ErrNotFound):
+			c.AbortWithStatusJSON(http.StatusNotFound, ErrorResponse{
+				Code:    "USER_NOT_FOUND",
+				Message: "user not found",
+			})
+		default:
+			h.log.Error("block user failed", "err", err)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Message: "internal server error"})
+		}
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+// UnblockUser — POST /users/{id}/unblock
+// @Summary      Unblock user (admin only)
+// @Tags         Users
+// @Produce      json
+// @Param        id   path      int  true  "User ID"
+// @Success      204
+// @Failure      400 {object} ErrorResponse
+// @Failure      401 {object} ErrorResponse
+// @Failure      403 {object} ErrorResponse
+// @Failure      404 {object} ErrorResponse
+// @Failure      500 {object} ErrorResponse
+// @Security     BearerAuth
+// @Router       /users/{id}/unblock [post]
+func (h *Handler) UnblockUser(c *gin.Context) {
+	_, role := UserIDFromCtx(c.Request.Context())
+	if role != "admin" {
+		c.AbortWithStatusJSON(http.StatusForbidden, ErrorResponse{
+			Code:    "FORBIDDEN",
+			Message: "admin only",
+		})
+		return
+	}
+
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil || id <= 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{
+			Message: "invalid user id",
+		})
+		return
+	}
+
+	if err := h.userUC.Unblock(c.Request.Context(), id); err != nil {
+		switch {
+		case errors.Is(err, dbErrors.ErrNotFound):
+			c.AbortWithStatusJSON(http.StatusNotFound, ErrorResponse{
+				Code:    "USER_NOT_FOUND",
+				Message: "user not found",
+			})
+		default:
+			h.log.Error("unblock user failed", "err", err)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorResponse{Message: "internal server error"})
+		}
+		return
+	}
 
 	c.Status(http.StatusNoContent)
 }

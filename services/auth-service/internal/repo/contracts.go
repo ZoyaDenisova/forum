@@ -13,7 +13,8 @@ type (
 		GetByID(ctx context.Context, userID int64) (*entity.User, error)
 		GetByEmail(ctx context.Context, email string) (*entity.User, error)
 		GetByUsername(ctx context.Context, username string) (*entity.User, error)
-		Delete(ctx context.Context, id int64) error
+		Unblock(ctx context.Context, id int64) error
+		Block(ctx context.Context, id int64) error
 	}
 	SessionRepo interface {
 		Save(ctx context.Context, s *entity.Session) error

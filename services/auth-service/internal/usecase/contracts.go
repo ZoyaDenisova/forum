@@ -11,6 +11,8 @@ type (
 		Update(ctx context.Context, id int64, params UpdateUserParams) error
 		Login(ctx context.Context, email, password, ua string) (string, string, error)
 		GetByID(ctx context.Context, id int64) (*entity.User, error)
+		Unblock(ctx context.Context, targetID int64) error
+		Block(ctx context.Context, targetID int64) error
 	}
 	Session interface {
 		Refresh(ctx context.Context, oldToken string) (string, string, error)

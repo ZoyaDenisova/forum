@@ -2745,3 +2745,24 @@
 {"level":"warn","time":"2025-05-25T20:51:24.323+0400","caller":"usecase/session.go:103","msg":"no active sessions found","userID":3}
 {"level":"error","time":"2025-05-25T20:51:24.323+0400","caller":"http/handler.go:273","msg":"GetSessions failed","err":"not found"}
 {"level":"info","time":"2025-05-25T20:51:24.323+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/sessions","status":500,"duration":0.0005795}
+{"level":"info","time":"2025-05-25T22:53:34.964+0400","caller":"app/app.go:29","msg":"service starting","name":"auth-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T22:53:34.968+0400","caller":"cron/session_cleanup.go:43","msg":"cron: session cleanup job scheduled","schedule":"0 0 * * *"}
+{"level":"info","time":"2025-05-25T22:53:34.968+0400","caller":"app/app.go:80","msg":"HTTP listening"}
+{"level":"info","time":"2025-05-25T22:53:34.968+0400","caller":"transportgrpc/router.go:25","msg":"gRPC router initialized"}
+{"level":"info","time":"2025-05-25T22:53:34.969+0400","caller":"app/app.go:94","msg":"starting gRPC server"}
+{"level":"info","time":"2025-05-25T22:57:03.499+0400","caller":"app/app.go:29","msg":"service starting","name":"auth-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T22:57:03.503+0400","caller":"cron/session_cleanup.go:43","msg":"cron: session cleanup job scheduled","schedule":"0 0 * * *"}
+{"level":"info","time":"2025-05-25T22:57:03.503+0400","caller":"app/app.go:80","msg":"HTTP listening"}
+{"level":"info","time":"2025-05-25T22:57:03.504+0400","caller":"transportgrpc/router.go:25","msg":"gRPC router initialized"}
+{"level":"info","time":"2025-05-25T22:57:03.504+0400","caller":"app/app.go:94","msg":"starting gRPC server"}
+{"level":"info","time":"2025-05-25T23:32:55.798+0400","caller":"app/app.go:29","msg":"service starting","name":"auth-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T23:32:55.827+0400","caller":"cron/session_cleanup.go:43","msg":"cron: session cleanup job scheduled","schedule":"0 0 * * *"}
+{"level":"info","time":"2025-05-25T23:32:55.827+0400","caller":"app/app.go:80","msg":"HTTP listening"}
+{"level":"info","time":"2025-05-25T23:32:55.827+0400","caller":"transportgrpc/router.go:25","msg":"gRPC router initialized"}
+{"level":"info","time":"2025-05-25T23:32:55.829+0400","caller":"app/app.go:94","msg":"starting gRPC server"}
+{"level":"info","time":"2025-05-25T23:32:58.462+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0005005}
+{"level":"info","time":"2025-05-25T23:32:58.491+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T23:32:58.492+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0005002}
+{"level":"info","time":"2025-05-25T23:32:58.497+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0058039}
+{"level":"info","time":"2025-05-25T23:32:58.634+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0001449}
+{"level":"info","time":"2025-05-25T23:32:58.638+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}

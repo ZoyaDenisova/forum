@@ -7,6 +7,8 @@
     <file url="file://$PROJECT_DIR$/migrations/1_create_table.up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/migrations/2_create_table_sessions.down.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/migrations/2_create_table_sessions.up.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/migrations/4_add_blocked_users.down.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/migrations/4_add_blocked_users.up.sql" dialect="PostgreSQL" />
     <file url="PROJECT" dialect="PostgreSQL" />
   </component>
 </project>

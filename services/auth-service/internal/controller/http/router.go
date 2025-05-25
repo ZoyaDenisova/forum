@@ -101,14 +101,21 @@ func NewRouter(
 		r.POST("/auth/refresh", h.Refresh)
 
 		// PROTECTED
-		secured := r.Group("/auth")
+		secured := r.Group("/users")
 		secured.Use(AuthMiddleware(tm))
 		{
-			secured.DELETE("/session", h.DeleteSession)
-			secured.DELETE("/sessions", h.DeleteAllSessions)
-			secured.GET("/sessions", h.GetSessions)
-			secured.GET("/me", h.Me)
-			secured.PATCH("/user", h.UpdateUser)
+			secured.POST("/:id/block", h.BlockUser)
+			secured.POST("/:id/unblock", h.UnblockUser)
+		}
+
+		securedAuth := r.Group("/auth")
+		securedAuth.Use(AuthMiddleware(tm))
+		{
+			securedAuth.DELETE("/session", h.DeleteSession)
+			securedAuth.DELETE("/sessions", h.DeleteAllSessions)
+			securedAuth.GET("/sessions", h.GetSessions)
+			securedAuth.GET("/me", h.Me)
+			securedAuth.PATCH("/user", h.UpdateUser)
 		}
 	}
 
