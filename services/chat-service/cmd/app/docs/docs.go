@@ -903,6 +903,9 @@ const docTemplate = `{
                 "author_id": {
                     "type": "integer"
                 },
+                "author_name": {
+                    "type": "string"
+                },
                 "content": {
                     "type": "string"
                 },
@@ -934,6 +937,9 @@ const docTemplate = `{
             "properties": {
                 "author_id": {
                     "type": "integer"
+                },
+                "author_name": {
+                    "type": "string"
                 },
                 "category_id": {
                     "type": "integer"

@@ -184,3 +184,33 @@
 {"level":"info","time":"2025-05-25T14:31:08.900+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"DELETE","path":"/topics/:id","status":403,"duration":0.0007496}
 {"level":"info","time":"2025-05-25T14:38:39.491+0400","caller":"app/app.go:120","msg":"shutdown signal received"}
 {"level":"info","time":"2025-05-25T14:38:39.491+0400","caller":"app/app.go:128","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T16:36:00.952+0400","caller":"app/app.go:29","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T16:36:00.980+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"fatal","time":"2025-05-25T16:36:06.009+0400","caller":"app/app.go:89","msg":"timeout waiting for auth-service connection","err":"context deadline exceeded"}
+{"level":"info","time":"2025-05-25T16:36:49.414+0400","caller":"app/app.go:29","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T16:36:49.442+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T16:36:49.995+0400","caller":"app/app.go:85","msg":"gRPC connection to auth-service is ready"}
+{"level":"info","time":"2025-05-25T16:36:49.995+0400","caller":"app/app.go:110","msg":"HTTP listening","port":"8081"}
+{"level":"debug","time":"2025-05-25T16:40:30.802+0400","caller":"usecase/message.go:139","msg":"GetMessages called","topic_id":1}
+{"level":"info","time":"2025-05-25T16:40:30.999+0400","caller":"usecase/message.go:147","msg":"messages retrieved","topic_id":1,"count":1}
+{"level":"info","time":"2025-05-25T16:40:30.999+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/topics/:id/messages","status":200,"duration":0.1975955}
+{"level":"info","time":"2025-05-25T16:51:53.446+0400","caller":"app/app.go:120","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T16:51:53.446+0400","caller":"app/app.go:128","msg":"server stopped gracefully"}
+{"level":"info","time":"2025-05-25T17:22:02.533+0400","caller":"app/app.go:29","msg":"service starting","name":"chat-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T17:22:02.561+0400","caller":"cron/cleanup.go:42","msg":"cron: cleanup job scheduled","schedule":"0 * * * *"}
+{"level":"info","time":"2025-05-25T17:22:02.611+0400","caller":"app/app.go:85","msg":"gRPC connection to auth-service is ready"}
+{"level":"info","time":"2025-05-25T17:22:02.612+0400","caller":"app/app.go:110","msg":"HTTP listening","port":"8081"}
+{"level":"info","time":"2025-05-25T17:24:05.079+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0005003}
+{"level":"info","time":"2025-05-25T17:24:05.101+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T17:24:05.101+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T17:24:05.104+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0026651}
+{"level":"info","time":"2025-05-25T17:24:05.221+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0003}
+{"level":"info","time":"2025-05-25T17:24:05.285+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"debug","time":"2025-05-25T17:24:25.746+0400","caller":"usecase/topic.go:31","msg":"ListTopics called","category_id":1}
+{"level":"info","time":"2025-05-25T17:24:25.943+0400","caller":"usecase/topic.go:42","msg":"topics retrieved","count":5,"category_id":1}
+{"level":"info","time":"2025-05-25T17:24:25.943+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"GET","path":"/categories/:id/topics","status":200,"duration":0.1971327}
+{"level":"debug","time":"2025-05-25T17:25:03.577+0400","caller":"usecase/message.go:36","msg":"SendMessage called","topic_id":1,"author_id":13}
+{"level":"info","time":"2025-05-25T17:25:03.593+0400","caller":"usecase/message.go:62","msg":"message sent","id":2,"topic_id":1}
+{"level":"info","time":"2025-05-25T17:25:03.593+0400","caller":"http/middleware.go:62","msg":"HTTP request","method":"POST","path":"/topics/:id/messages","status":201,"duration":0.0173094}
+{"level":"info","time":"2025-05-25T17:25:52.393+0400","caller":"app/app.go:120","msg":"shutdown signal received"}
+{"level":"info","time":"2025-05-25T17:25:52.393+0400","caller":"app/app.go:128","msg":"server stopped gracefully"}

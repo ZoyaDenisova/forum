@@ -8,5 +8,6 @@ type Topic struct {
 	Title       string    `db:"title"`
 	Description string    `db:"description"`
 	AuthorID    int64     `db:"author_id"`
+	AuthorName  string    `db:"author_name"`
 	CreatedAt   time.Time `db:"created_at"`
 }

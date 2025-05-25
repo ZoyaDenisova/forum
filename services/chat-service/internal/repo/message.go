@@ -27,10 +27,9 @@ func (r *MessageRepoPostgres) Create(ctx context.Context, m *entity.Message) err
         RETURNING id
     `
 
-	var id int64
-	err := r.Pool.QueryRow(ctx, query, m.TopicID, m.AuthorID, m.Content, m.CreatedAt).
-		Scan(&id)
-	if err != nil {
+	if err := r.Pool.QueryRow(ctx, query,
+		m.TopicID, m.AuthorID, m.Content, m.CreatedAt,
+	).Scan(&m.ID); err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
 	return nil
@@ -71,10 +70,11 @@ func (r *MessageRepoPostgres) Delete(ctx context.Context, id int64) error {
 func (r *MessageRepoPostgres) GetByTopic(ctx context.Context, topicID int64) ([]*entity.Message, error) {
 	const op = "MessageRepo.GetByTopic"
 	const query = `
-        SELECT id, topic_id, author_id, content, created_at
-        FROM messages
-        WHERE topic_id = $1
-        ORDER BY created_at
+        SELECT m.id, m.topic_id, m.author_id, u.name AS author_name, m.content, m.created_at
+        FROM messages m
+        JOIN users u ON u.id = m.author_id
+        WHERE m.topic_id = $1
+        ORDER BY m.created_at
     `
 
 	rows, err := r.Pool.Query(ctx, query, topicID)
@@ -86,7 +86,7 @@ func (r *MessageRepoPostgres) GetByTopic(ctx context.Context, topicID int64) ([]
 	var list []*entity.Message
 	for rows.Next() {
 		m := &entity.Message{}
-		if err := rows.Scan(&m.ID, &m.TopicID, &m.AuthorID, &m.Content, &m.CreatedAt); err != nil {
+		if err := rows.Scan(&m.ID, &m.TopicID, &m.AuthorID, &m.AuthorName, &m.Content, &m.CreatedAt); err != nil {
 			return nil, fmt.Errorf("%s: scan: %w", op, err)
 		}
 		list = append(list, m)
@@ -100,14 +100,15 @@ func (r *MessageRepoPostgres) GetByTopic(ctx context.Context, topicID int64) ([]
 func (r *MessageRepoPostgres) GetByID(ctx context.Context, id int64) (*entity.Message, error) {
 	const op = "MessageRepo.GetByID"
 	const query = `
-        SELECT id, topic_id, author_id, content, created_at
-        FROM messages
-        WHERE id = $1
+        SELECT m.id, m.topic_id, m.author_id, u.name AS author_name, m.content, m.created_at
+        FROM messages m
+        JOIN users u ON u.id = m.author_id
+        WHERE m.id = $1
     `
 
 	m := &entity.Message{}
 	err := r.Pool.QueryRow(ctx, query, id).
-		Scan(&m.ID, &m.TopicID, &m.AuthorID, &m.Content, &m.CreatedAt)
+		Scan(&m.ID, &m.TopicID, &m.AuthorID, &m.AuthorName, &m.Content, &m.CreatedAt)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, fmt.Errorf("%s: %w", op, errors.ErrNotFound)

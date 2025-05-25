@@ -23,11 +23,12 @@ type updateMessageRequest struct {
 
 // добавила имя автора, проверить ошибки
 type messageResponse struct {
-	ID        int64  `json:"id"`
-	TopicID   int64  `json:"topic_id"`
-	AuthorID  int64  `json:"author_id"`
-	Content   string `json:"content"`
-	CreatedAt int64  `json:"created_at"` // unix timestamp
+	ID         int64  `json:"id"`
+	TopicID    int64  `json:"topic_id"`
+	AuthorID   int64  `json:"author_id"`
+	AuthorName string `json:"author_name"`
+	Content    string `json:"content"`
+	CreatedAt  int64  `json:"created_at"` // unix timestamp
 }
 
 type createTopicRequest struct {
@@ -48,6 +49,7 @@ type topicResponse struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	AuthorID    int64     `json:"author_id"`
+	AuthorName  string    `json:"author_name"`
 	CreatedAt   time.Time `json:"created_at"`
 }
 

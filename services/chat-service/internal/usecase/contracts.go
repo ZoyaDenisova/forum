@@ -24,7 +24,7 @@ type TopicUsecase interface {
 }
 
 type MessageUsecase interface {
-	SendMessage(ctx context.Context, p SendMessageParams) error
+	SendMessage(ctx context.Context, p SendMessageParams) (*entity.Message, error)
 	UpdateMessage(ctx context.Context, id int64, newContent string) error
 	DeleteMessage(ctx context.Context, id int64) error
 	GetMessages(ctx context.Context, topicID int64) ([]*entity.Message, error)

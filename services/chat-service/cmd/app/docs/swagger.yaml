@@ -43,6 +43,8 @@ definitions:
     properties:
       author_id:
         type: integer
+      author_name:
+        type: string
       content:
         type: string
       created_at:
@@ -64,6 +66,8 @@ definitions:
     properties:
       author_id:
         type: integer
+      author_name:
+        type: string
       category_id:
         type: integer
       created_at:

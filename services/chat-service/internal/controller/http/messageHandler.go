@@ -43,11 +43,12 @@ func (h *MessageHandler) GetMessages(c *gin.Context) {
 	resp := make([]messageResponse, 0, len(list))
 	for _, m := range list {
 		resp = append(resp, messageResponse{
-			ID:        m.ID,
-			TopicID:   m.TopicID,
-			AuthorID:  m.AuthorID,
-			Content:   m.Content,
-			CreatedAt: m.CreatedAt.Unix(),
+			ID:         m.ID,
+			TopicID:    m.TopicID,
+			AuthorID:   m.AuthorID,
+			AuthorName: m.AuthorName, // добавлено
+			Content:    m.Content,
+			CreatedAt:  m.CreatedAt.Unix(),
 		})
 	}
 
@@ -82,7 +83,7 @@ func (h *MessageHandler) SendMessage(c *gin.Context) {
 
 	authorID, _ := UserIDFromCtx(c.Request.Context())
 
-	err = h.uc.SendMessage(c.Request.Context(), usecase.SendMessageParams{
+	msg, err := h.uc.SendMessage(c.Request.Context(), usecase.SendMessageParams{
 		TopicID:  tid,
 		AuthorID: authorID,
 		Content:  req.Content,
@@ -100,10 +101,12 @@ func (h *MessageHandler) SendMessage(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, messageResponse{
-		TopicID:   tid,
-		AuthorID:  authorID,
-		Content:   req.Content,
-		CreatedAt: 0, // клиенту достаточно WS-обновления
+		ID:         msg.ID,
+		TopicID:    msg.TopicID,
+		AuthorID:   msg.AuthorID,
+		AuthorName: msg.AuthorName, // будет "", если не наполняли — это ок
+		Content:    msg.Content,
+		CreatedAt:  msg.CreatedAt.Unix(),
 	})
 }
 

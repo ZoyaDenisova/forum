@@ -861,3 +861,31 @@
 {"level":"info","time":"2025-05-25T14:31:08.900+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
 {"level":"debug","time":"2025-05-25T14:31:08.900+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":13,"role":"user"}
 {"level":"info","time":"2025-05-25T14:31:08.900+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":13,"role":"user"}
+{"level":"info","time":"2025-05-25T16:36:14.644+0400","caller":"app/app.go:29","msg":"service starting","name":"auth-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T16:36:14.676+0400","caller":"cron/session_cleanup.go:43","msg":"cron: session cleanup job scheduled","schedule":"0 0 * * *"}
+{"level":"info","time":"2025-05-25T16:36:14.676+0400","caller":"app/app.go:80","msg":"HTTP listening"}
+{"level":"info","time":"2025-05-25T16:36:14.676+0400","caller":"transportgrpc/router.go:25","msg":"gRPC router initialized"}
+{"level":"info","time":"2025-05-25T16:36:14.677+0400","caller":"app/app.go:94","msg":"starting gRPC server"}
+{"level":"info","time":"2025-05-25T16:36:45.992+0400","caller":"app/app.go:29","msg":"service starting","name":"auth-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T16:36:46.021+0400","caller":"cron/session_cleanup.go:43","msg":"cron: session cleanup job scheduled","schedule":"0 0 * * *"}
+{"level":"info","time":"2025-05-25T16:36:46.021+0400","caller":"app/app.go:80","msg":"HTTP listening"}
+{"level":"info","time":"2025-05-25T16:36:46.021+0400","caller":"transportgrpc/router.go:25","msg":"gRPC router initialized"}
+{"level":"info","time":"2025-05-25T16:36:46.022+0400","caller":"app/app.go:94","msg":"starting gRPC server"}
+{"level":"debug","time":"2025-05-25T16:39:16.286+0400","caller":"usecase/user.go:83","msg":"Login called","email":"user@yandex.ru"}
+{"level":"info","time":"2025-05-25T16:39:16.575+0400","caller":"usecase/user.go:115","msg":"user logged in","userID":13}
+{"level":"info","time":"2025-05-25T16:39:16.575+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/login","status":200,"duration":0.2892561}
+{"level":"debug","time":"2025-05-25T16:40:01.042+0400","caller":"usecase/user.go:162","msg":"GetByID called","userID":13}
+{"level":"info","time":"2025-05-25T16:40:01.043+0400","caller":"usecase/user.go:175","msg":"user fetched","userID":13}
+{"level":"info","time":"2025-05-25T16:40:01.043+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":200,"duration":0.0012368}
+{"level":"debug","time":"2025-05-25T17:22:30.203+0400","caller":"usecase/user.go:83","msg":"Login called","email":"user@yandex.ru"}
+{"level":"info","time":"2025-05-25T17:22:30.365+0400","caller":"usecase/user.go:115","msg":"user logged in","userID":13}
+{"level":"info","time":"2025-05-25T17:22:30.365+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/login","status":200,"duration":0.1620203}
+{"level":"debug","time":"2025-05-25T17:24:01.603+0400","caller":"usecase/user.go:162","msg":"GetByID called","userID":13}
+{"level":"info","time":"2025-05-25T17:24:01.604+0400","caller":"usecase/user.go:175","msg":"user fetched","userID":13}
+{"level":"info","time":"2025-05-25T17:24:01.604+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/auth/me","status":200,"duration":0.0004997}
+{"level":"debug","time":"2025-05-25T17:25:03.577+0400","caller":"transportgrpc/interceptor.go:42","msg":"incoming metadata: %+v"}
+{"level":"debug","time":"2025-05-25T17:25:03.577+0400","caller":"transportgrpc/interceptor.go:51","msg":"authorization header","value":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEzLCJyb2xlIjoidXNlciIsImV4cCI6MTc0ODE4MDI1MCwiaWF0IjoxNzQ4MTc5MzUwfQ.PE0hgtNIXXnZnjPoQcH_uwna-BqkHg3JlI7PIPcbCkE"}
+{"level":"debug","time":"2025-05-25T17:25:03.577+0400","caller":"transportgrpc/interceptor.go:65","msg":"token validated: userID=%s role=%s","invalid_key_0":"user"}
+{"level":"info","time":"2025-05-25T17:25:03.577+0400","caller":"transportgrpc/handler.go:26","msg":"VerifyToken called"}
+{"level":"debug","time":"2025-05-25T17:25:03.577+0400","caller":"transportgrpc/handler.go:29","msg":"Extracted from context","userID":13,"role":"user"}
+{"level":"info","time":"2025-05-25T17:25:03.577+0400","caller":"transportgrpc/handler.go:36","msg":"VerifyToken successful","userID":13,"role":"user"}
