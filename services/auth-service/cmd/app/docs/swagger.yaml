@@ -65,6 +65,8 @@ definitions:
         type: string
       id:
         type: integer
+      is_blocked:
+        type: boolean
       name:
         type: string
       role:
@@ -318,6 +320,34 @@ paths:
       summary: Partially update own profile
       tags:
       - Auth
+  /users:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/http.UserResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить список всех пользователей (только для админа)
+      tags:
+      - Users
   /users/{id}/block:
     post:
       parameters:
@@ -355,7 +385,7 @@ paths:
       - BearerAuth: []
       summary: Block user (admin only)
       tags:
-      - Admin
+      - Users
   /users/{id}/unblock:
     post:
       parameters:
@@ -393,7 +423,7 @@ paths:
       - BearerAuth: []
       summary: Unblock user (admin only)
       tags:
-      - Admin
+      - Users
 schemes:
 - http
 securityDefinitions:
