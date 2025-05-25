@@ -71,7 +71,7 @@ export function GeneralChatPanel() {
             id: String(wsData.message.ID ?? wsData.message.id),
             text: wsData.message.Content ?? wsData.message.content ?? wsData.message.text,
             author: {
-              id: String(wsData.message.author),
+              id: String(wsData.message.author ?? wsData.message.author_id ?? wsData.message.AuthorID),
               name: wsData.message.authorName ?? wsData.message.author_name ?? (wsData.message.author && wsData.message.author.name) ?? '',
             },
             createdAt: normalizeIsoDateString(wsData.message.CreatedAt ?? wsData.message.created_at ?? wsData.message.createdAt),
