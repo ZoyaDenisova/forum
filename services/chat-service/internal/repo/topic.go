@@ -22,7 +22,7 @@ func (r *TopicRepoPostgres) Create(ctx context.Context, t *entity.Topic) (int64,
 	const query = `
         INSERT INTO topics (category_id, title, description, author_id, created_at)
         VALUES ($1, $2, $3, $4, $5)
-        RETURNING id,
+        RETURNING id;
     `
 
 	var id int64

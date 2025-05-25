@@ -55,13 +55,16 @@ func NewRouter(
 
 	// CORS как в auth-сервисе
 	corsConfig := cors.Config{
-		AllowOrigins: []string{"http://172.20.10.2:5173"},
+		AllowOrigins: []string{
+			"http://172.20.10.2:5173",
+			"http://localhost:5173",
+		},
 		AllowOriginFunc: func(origin string) bool {
 			u, err := url.Parse(origin)
 			if err != nil {
 				return false
 			}
-			return strings.HasPrefix(u.Hostname(), "172.20.1.")
+			return strings.HasPrefix(u.Hostname(), "172.20.1.") || strings.HasPrefix(u.Hostname(), "localhost")
 		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Authorization", "Content-Type"},

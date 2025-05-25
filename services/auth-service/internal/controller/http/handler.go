@@ -101,7 +101,7 @@ func (h *Handler) Login(c *gin.Context) {
 
 	// устанавливаем refresh-token в HttpOnly cookie
 	ttl := int(h.cfg.JWT.RefreshTTL.Seconds())
-	c.SetCookie(RefreshCookieName, refresh, ttl, "/", "", true, true)
+	c.SetCookie(RefreshCookieName, refresh, ttl, "/", "", false, true)
 	c.Header("Set-Cookie", c.Writer.Header().Get("Set-Cookie")+"; SameSite=Strict")
 
 	// возвращаем access-token

@@ -58,6 +58,7 @@ func NewRouter(
 		// Явный список origins (нужен, чтобы gin-contrib не ругался на AllowCredentials с "*")
 		AllowOrigins: []string{
 			"http://172.20.10.2:5173",
+			"http://localhost:5173",
 		},
 
 		// Функция, которая дополнительно разрешит любые origin из подсегмента 192.168.1.*:5173
@@ -67,7 +68,7 @@ func NewRouter(
 				return false
 			}
 			host := u.Hostname()
-			return strings.HasPrefix(host, "172.20.1.")
+			return strings.HasPrefix(host, "172.20.1.") || strings.HasPrefix(host, "localhost")
 		},
 
 		// Какие методы разрешаем
