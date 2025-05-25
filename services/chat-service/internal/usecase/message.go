@@ -99,11 +99,12 @@ func (uc *MessageUC) UpdateMessage(ctx context.Context, id int64, newContent str
 	}
 
 	updated := &entity.Message{
-		ID:        id,
-		TopicID:   m.TopicID,
-		AuthorID:  m.AuthorID,
-		Content:   newContent,
-		CreatedAt: m.CreatedAt,
+		ID:         id,
+		TopicID:    m.TopicID,
+		AuthorID:   m.AuthorID,
+		AuthorName: m.AuthorName,
+		Content:    newContent,
+		CreatedAt:  m.CreatedAt,
 	}
 
 	uc.publisher.Publish(m.TopicID, &entity.WSEvent{
