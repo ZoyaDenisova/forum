@@ -2766,3 +2766,30 @@
 {"level":"info","time":"2025-05-25T23:32:58.497+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0058039}
 {"level":"info","time":"2025-05-25T23:32:58.634+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0001449}
 {"level":"info","time":"2025-05-25T23:32:58.638+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T23:51:56.439+0400","caller":"app/app.go:29","msg":"service starting","name":"auth-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T23:51:56.466+0400","caller":"cron/session_cleanup.go:43","msg":"cron: session cleanup job scheduled","schedule":"0 0 * * *"}
+{"level":"info","time":"2025-05-25T23:51:56.466+0400","caller":"app/app.go:80","msg":"HTTP listening"}
+{"level":"info","time":"2025-05-25T23:51:56.467+0400","caller":"transportgrpc/router.go:25","msg":"gRPC router initialized"}
+{"level":"info","time":"2025-05-25T23:51:56.467+0400","caller":"app/app.go:94","msg":"starting gRPC server"}
+{"level":"info","time":"2025-05-25T23:52:09.176+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T23:52:09.190+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T23:52:09.194+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0005028}
+{"level":"info","time":"2025-05-25T23:52:09.197+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0044764}
+{"level":"info","time":"2025-05-25T23:52:09.245+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T23:52:09.251+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"debug","time":"2025-05-25T23:52:30.830+0400","caller":"usecase/user.go:87","msg":"Login called","email":"kitten@yandex.ru"}
+{"level":"info","time":"2025-05-25T23:52:30.998+0400","caller":"usecase/user.go:125","msg":"user logged in","userID":12}
+{"level":"info","time":"2025-05-25T23:52:30.999+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"POST","path":"/auth/login","status":200,"duration":0.1691821}
+{"level":"info","time":"2025-05-25T23:52:54.888+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"","status":404,"duration":0}
+{"level":"info","time":"2025-05-25T23:53:51.167+0400","caller":"app/app.go:29","msg":"service starting","name":"auth-service","version":"1.0.0"}
+{"level":"info","time":"2025-05-25T23:53:51.195+0400","caller":"cron/session_cleanup.go:43","msg":"cron: session cleanup job scheduled","schedule":"0 0 * * *"}
+{"level":"info","time":"2025-05-25T23:53:51.196+0400","caller":"app/app.go:80","msg":"HTTP listening"}
+{"level":"info","time":"2025-05-25T23:53:51.196+0400","caller":"transportgrpc/router.go:25","msg":"gRPC router initialized"}
+{"level":"info","time":"2025-05-25T23:53:51.197+0400","caller":"app/app.go:94","msg":"starting gRPC server"}
+{"level":"info","time":"2025-05-25T23:54:08.212+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T23:54:08.232+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0010258}
+{"level":"info","time":"2025-05-25T23:54:08.233+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0020395}
+{"level":"info","time":"2025-05-25T23:54:08.233+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0005005}
+{"level":"info","time":"2025-05-25T23:54:08.349+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0.0000782}
+{"level":"info","time":"2025-05-25T23:54:08.405+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/swagger/*any","status":200,"duration":0}
+{"level":"info","time":"2025-05-25T23:54:17.835+0400","caller":"http/middleware.go:49","msg":"HTTP request","method":"GET","path":"/users/","status":200,"duration":0.202696}
