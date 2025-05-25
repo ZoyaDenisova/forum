@@ -1,6 +1,7 @@
 package http
 
 import (
+	"chat-service/internal/auth"
 	"net/http"
 	"strconv"
 	"time"
@@ -48,6 +49,7 @@ func (h *TopicHandler) ListTopics(c *gin.Context) {
 			Title:       t.Title,
 			Description: t.Description,
 			AuthorID:    t.AuthorID,
+			AuthorName:  t.AuthorName,
 			CreatedAt:   t.CreatedAt,
 		})
 	}
@@ -90,6 +92,7 @@ func (h *TopicHandler) GetTopic(c *gin.Context) {
 		Title:       t.Title,
 		Description: t.Description,
 		AuthorID:    t.AuthorID,
+		AuthorName:  t.AuthorName,
 		CreatedAt:   t.CreatedAt,
 	})
 }
@@ -114,8 +117,7 @@ func (h *TopicHandler) CreateTopic(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
 		return
 	}
-
-	authorID, _ := UserIDFromCtx(c.Request.Context())
+	authorID, _ := auth.FromContext(c.Request.Context())
 
 	id, err := h.uc.CreateTopic(c.Request.Context(), usecase.TopicParams{
 		CategoryID:  req.CategoryID,

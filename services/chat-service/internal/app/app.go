@@ -14,6 +14,7 @@ import (
 	"github.com/ZoyaDenisova/go-common/logger"
 	"github.com/ZoyaDenisova/go-common/postgres"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials/insecure"
 	"net/http"
 	"os"
@@ -56,15 +57,39 @@ func Run(cfg *config.Config) {
 
 	// gRPC auth-service connection
 	authAddr := fmt.Sprintf("%s:%s", cfg.AuthGRPC.Host, cfg.AuthGRPC.Port)
-	conn, err := grpc.Dial(
+	conn, err := grpc.NewClient(
 		authAddr,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
+		// При необходимости можно задать параметры reconnection/backoff:
+		grpc.WithConnectParams(grpc.ConnectParams{
+			MinConnectTimeout: 5 * time.Second,
+			// Backoff:           backoff.DefaultConfig, // при желании кастомизируете
+		}),
 	)
 	if err != nil {
-		l.Fatal("failed to dial auth-service", "addr", authAddr, "err", err)
+		l.Fatal("failed to create auth-service client", "addr", authAddr, "err", err)
 	}
-	defer conn.Close()
+	defer func(conn *grpc.ClientConn) {
+		err := conn.Close()
+		if err != nil {
+
+		}
+	}(conn)
+
+	// 2. (Опционально) можно явно инициировать соединение и дождаться Ready-состояния:
+	dialCtx, dialCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer dialCancel()
+	conn.Connect() // не блокирует, но начинает попытку
+	for {
+		if conn.GetState() == connectivity.Ready {
+			l.Info("gRPC connection to auth-service is ready")
+			break
+		}
+		if dialCtx.Err() != nil {
+			l.Fatal("timeout waiting for auth-service connection", "err", dialCtx.Err())
+		}
+		time.Sleep(50 * time.Millisecond)
+	}
 
 	authClient := authpb.NewAuthServiceClient(conn)
 

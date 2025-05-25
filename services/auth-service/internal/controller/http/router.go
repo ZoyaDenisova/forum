@@ -94,12 +94,12 @@ func NewRouter(
 	// Включаем CORS middleware
 	r.Use(cors.New(corsConfig))
 	{
-		// public auth endpoints
+		// PUBLIC
 		r.POST("/auth/register", h.Register)
 		r.POST("/auth/login", h.Login)
 		r.POST("/auth/refresh", h.Refresh)
 
-		// protected session endpoints
+		// PROTECTED
 		secured := r.Group("/auth")
 		secured.Use(AuthMiddleware(tm))
 		{

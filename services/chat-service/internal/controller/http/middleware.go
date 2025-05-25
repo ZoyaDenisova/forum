@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/ZoyaDenisova/go-common/contextkeys"
+	"github.com/ZoyaDenisova/go-common/logger"
 	"google.golang.org/grpc/metadata"
 	"net/http"
 	"strings"
+	"time"
 
 	authpb "chat-service/cmd/app/docs/proto"
 	"github.com/gin-gonic/gin"
@@ -49,5 +51,19 @@ func AuthMiddleware(authClient authpb.AuthServiceClient) gin.HandlerFunc {
 		c.Request = c.Request.WithContext(ctx)
 
 		c.Next()
+	}
+}
+
+// LoggingMiddleware логирует каждый HTTP-запрос
+func LoggingMiddleware(log logger.Interface) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		start := time.Now()
+		c.Next()
+		log.Info("HTTP request",
+			"method", c.Request.Method,
+			"path", c.FullPath(),
+			"status", c.Writer.Status(),
+			"duration", time.Since(start),
+		)
 	}
 }

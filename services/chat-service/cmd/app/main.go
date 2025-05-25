@@ -22,6 +22,11 @@ import (
 //swag init -g ./cmd/app/main.go --parseInternal --output ./cmd/app/docs
 //генерирует сваггер (из корня проекта)
 
+//mockgen -source=C:/Users/user/GolandProjects/forum/services/chat-service/internal/repo/contracts.go `
+//        -destination=C:/Users/user/GolandProjects/forum/services/chat-service/internal/usecase/mocks/repo_mocks.go `
+//        -package=mocks
+//моки
+
 func main() {
 	// Configuration
 	cfg, err := config.NewConfig()
