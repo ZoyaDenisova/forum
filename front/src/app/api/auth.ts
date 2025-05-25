@@ -80,7 +80,7 @@ export async function logoutUserOnServer(): Promise<void> {
 
 // Регистрация нового пользователя
 export async function registerUser(userData: RegisterRequest): Promise<string> {
-  const response = await fetch(`${API_BASE_URL}/register`, {
+  const response = await fetch(`/api${API_BASE_URL}/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(userData),
